@@ -1,4 +1,4 @@
-function out = find_box(im)
+function [box, mask] = find_box(im)
 %FIND_BOX Find the box in the image.
 
 [h, w, ~] = size(im);
@@ -50,6 +50,7 @@ bw = bwconvhull(bw);
 
 %imshow(resized .* bw);
 %%%% RISCALARE LE MASCHEREEEE E NON LE IMMAGINI e scriverlo nel progetto!!!!!!
-out = imresize(bw, [h w]); % Deve avere la stessa dimensione
+mask = imresize(bw, [h w]); % Deve avere la stessa dimensione
+box = im .* mask; 
 %imwrite(im .* out, "Segmented/" + i + ".png");
 end
