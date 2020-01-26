@@ -1,4 +1,4 @@
-function out = object_classifier(image, show)
+function out = choco_classifier(image, show)
 %     create_descriptor_files();
 %     load('features.mat', 'features');
 %     [images, labels]= readlists();
