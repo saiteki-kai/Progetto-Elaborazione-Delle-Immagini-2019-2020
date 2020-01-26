@@ -1,0 +1,6 @@
+Differenza con un riferimento per trovare i mancanti 
+
+• L’applicazione deve dare un giudizio (binario) di conformità (Classificazione)
+
+• Per una scatola non conforme, l’applicazione deve visualizzare
+DOVE è presente la non conformità (Localizzazione)

@@ -1,13 +1,5 @@
-clear;
-close all;
-
-[images, ~] = readlists();
-
-imgs = get_files("Augmented");
-
-for i = 40:40%numel(images)
-im = imread(['Acquisizioni/' images{i}]);
-im = im2double(im);
+function out = find_box(im)
+%FIND_BOX Find the box in the image.
 
 [h, w, ~] = size(im);
 resized = imresize(im, 1/5);
@@ -57,8 +49,7 @@ bw = imopen(bw, strel('diamond', 1)); % 2
 bw = bwconvhull(bw);
 
 %imshow(resized .* bw);
-%out = imresize(bw, [h w]);
-%imwrite(im .* out, "Segmented/" + i + ".png");
-
 %%%% RISCALARE LE MASCHEREEEE E NON LE IMMAGINI e scriverlo nel progetto!!!!!!
+out = imresize(bw, [h w]); % Deve avere la stessa dimensione
+%imwrite(im .* out, "Segmented/" + i + ".png");
 end

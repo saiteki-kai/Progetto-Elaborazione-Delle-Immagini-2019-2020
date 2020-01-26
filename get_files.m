@@ -3,5 +3,5 @@ function files = get_files(folder_path)
 
 files = dir(folder_path);
 files = files([files.isdir] == 0);
-files = {files.name}';
+files = strcat(folder_path, '/', {files.name}');
 end
