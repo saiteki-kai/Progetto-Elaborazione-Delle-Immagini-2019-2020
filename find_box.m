@@ -1,20 +1,17 @@
-function [box, mask] = find_box(im)
+function mask = find_box(im)
 %FIND_BOX Find the box in the image.
 
-[h, w, ~] = size(im);
-resized = imresize(im, 1/5);
+%print_color_spaces(im);
 
-print_color_spaces(resized);
-
-%resized = histeq(resized);
-%resized = imadjust(resized, [0.1 0.99], [], 0.8);
-gray = rgb2hsv(resized); % GRAY
-gray(:,:,3) = 1;
+%resized = histeq(im);
+%resized = imadjust(im, [0.1 0.99], [], 0.8);
+gray = rgb2gray(im); % GRAY
+%gray(:,:,1) = 0;
 %gray = gray(:,:,2);
-gray = hsv2rgb(gray);
+%gray = ycbcr2rgb(gray);
 %figure,imshowpair(gray(:,:,1), gray(:,:,2), 'montage');
-gray = rgb2gray(gray);
-figure, imhist(gray);
+%gray = rgb2gray(gray);
+%figure, imhist(gray);
 
 % Spiegare perchè una 5x5 (guarda l'immagine 1/5)..?
 sigma = 0.8; % 5x5 <- [0.8*2.5]*2+1 
@@ -39,18 +36,12 @@ otsu = graythresh(gray); % Perchè otsu..?
 %figure,imshow(bw);
 %bw2 = edge(gray(:,:,3), 'canny', [0.66 * m, 1.33 * m], 2); % 0.25
 
-figure, imshow(bw);
-bw = imdilate(bw, strel('disk', 3)); % 4
+%figure, imshow(bw);
+bw = imdilate(bw, strel('disk', 11)); % 4
 bw = imfill(bw, 'holes');
 
 bw = bwareafilt(bw, 1);
-bw = imopen(bw, strel('diamond', 1)); % 2
+bw = imopen(bw, strel('diamond', 3)); % 2
 
-bw = bwconvhull(bw);
-
-%imshow(resized .* bw);
-%%%% RISCALARE LE MASCHEREEEE E NON LE IMMAGINI e scriverlo nel progetto!!!!!!
-mask = imresize(bw, [h w]); % Deve avere la stessa dimensione
-box = im .* mask; 
-%imwrite(im .* out, "Segmented/" + i + ".png");
+mask = bwconvhull(bw);
 end
