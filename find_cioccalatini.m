@@ -27,28 +27,52 @@ imBright = ycbcr(:,:,2);
     'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'bright');
 
-centers = [centersBright; centersDark];
-radii = [radiiBright; radiiDark];
+centers = centersDark;%[centersBright; centersDark];
+radii = radiiDark;%[radiiBright; radiiDark];
 
 % Set all radius to the mean
 m = mean(radii);
 d = std(radii);
-radii = m * ones(length(radii), 1) + d;
+radii = m * ones(length(radii), 1) - 2 * d;
 
- h = figure;
+% Verificare se abbondare o meno col raggio
 
-subplot(1,2,1);
-imshow(imBright);title("Bright");
-hold on;
-viscircles(centersBright, m * ones(length(radiiBright), 1) + d, 'EdgeColor', 'r', 'LineWidth', 3); axis image;
+%h = figure;
 
-subplot(1,2,2);
+% subplot(1,2,1);
+% imshow(imBright);title("Bright");
+% hold on;
+% viscircles(centersBright, m * ones(length(radiiBright), 1) + d, 'EdgeColor', 'r', 'LineWidth', 3); axis image;
+% 
+% subplot(1,2,2);
 imshow(imDark);title("Dark");
 hold on;
-viscircles(centersDark, m * ones(length(radiiDark), 1) + d, 'EdgeColor', 'b', 'LineWidth', 3); axis image;
+viscircles(centersDark, m * ones(length(radiiDark), 1) - d, 'EdgeColor', 'b', 'LineWidth', 3); axis image;
 
- saveas(h, "./Tests/circles" + i + ".jpg");
- close(h);
+% saveas(h, "./Tests/circles" + i + ".jpg");
+% close(h);
+
+
+%BOH
+
+% props = regionprops(mask, 'BoundingBox', 'Orientation', 'Extrema');
+% 
+% bbox = props.BoundingBox;
+% ex = props.Extrema;
+
+% figure, imshow(box);
+% hold on;
+% rectangle('Position', bbox, 'EdgeColor', 'r');
+% scatter(ex(2:3,1), ex(2:3,2));
+% scatter(ex(4:5,1), ex(4:5,2));
+% 
+% line1 = abs(ex(2,:) - ex(3,:));
+% line2 = abs(ex(4,:) - ex(5,:));
+% 
+% ll = line1;
+% if (norm(line2) > norm(line1))
+%     ll = line2;
+% end
 
 
 end

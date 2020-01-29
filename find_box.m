@@ -31,10 +31,7 @@ otsu = graythresh(gray); % Perchè otsu..?
 % xline(lower * 0.4 * 255, 'y');
 % xline(higher * 255);
 
-% 0.33 * otsu
-[bw, x] = edge(gray, 'canny', [otsu/2, otsu], sigma);
-%figure,imshow(bw);
-%bw2 = edge(gray(:,:,3), 'canny', [0.66 * m, 1.33 * m], 2); % 0.25
+bw = edge(gray, 'canny', 0.2, sigma);
 
 %figure, imshow(bw);
 bw = imdilate(bw, strel('disk', 11)); % 4
