@@ -21,7 +21,7 @@ box = resized .* mask;
 % Square/ Non Square
 
 % Create the abstract grid of the choco's positions
-grid = create_grid(centers);
+grid = create_grid2(centers);
 
 continue;
 
