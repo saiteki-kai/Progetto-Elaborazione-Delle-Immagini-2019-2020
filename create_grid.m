@@ -1,9 +1,17 @@
 function grid = create_grid(centers)
 %CREATE_GRID 
 
-centers = exclude_outliers(centers);
+% externals points
+externals = boundary(centers, 1);
 
-% Prendere gli esterni ?
+% assuming there must be 24 points
+if (length(centers) > 24)
+    centers = exclude_outliers(centers, externals);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% cercare per ogni punto esterno, mantenendo il punto associato %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % vettore coeff. angolare
 X = zeros(length(centers), length(centers), 1);

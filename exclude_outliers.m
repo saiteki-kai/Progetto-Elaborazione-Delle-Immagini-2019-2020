@@ -1,36 +1,33 @@
-function centers = exclude_outliers(centers)
-%EXCLUDE_OUTLIERS
+function points = exclude_outliers(points, externals)
+%EXCLUDE_OUTLIERS exclude the most distant points
 
-% outer points
-k = boundary(centers, 1);
+N = length(points);
 
 % inner points
-in = (1:length(centers))';
-in = in(~ismember(in, k));
+in = (1:N)';
+in = in(~ismember(in, externals));
 
-% center of intern points
-m1 = mean(centers(in,1));
-m2 = mean(centers(in,2));
-center = [m1, m2];
+% center of inner points
+centroid = mean(points(in,:));
 
-figure; plot(m1, m2, 'b*');
+figure; plot(centroid(1), centroid(2), 'b*');
 hold on;
 
 % calculate distances
-norme = zeros(length(centers), 1);
-for i=1:length(norme)
-    norme(i) = norm(centers(i,:) - center);
-    plot([centers(i,1) - center(1), 0], [centers(i,2) - center(2), 0]);
-    viscircles(center, norm(centers(i,:) - center), 'Color', 'g');
+norme = zeros(N, 1);
+for i=1:N
+    norme(i) = norm(points(i,:) - centroid);
+    plot([points(i,1) - centroid(1), 0], [points(i,2) - centroid(2), 0]);
+    viscircles(centroid, norm(points(i,:) - centroid), 'Color', 'g');
 end
 
-scatter(centers(:,1), centers(:,2), 'b', 'filled'), axis image; % all points
-scatter(centers(in,1), centers(in,2), 'g', 'filled'); % intern points
+scatter(points(:,1), points(:,2), 'b', 'filled'), axis image; % all points
+scatter(points(in,1), points(in,2), 'g', 'filled'); % intern points
 
-% exclude the first two max
+% exclude the first N - 24 max
 [~, l] = mink(norme, 24);
-scatter(centers(l,1), centers(l,2), 'm', 'filled');
+scatter(points(l,1), points(l,2), 'm', 'filled');
 %viscircles([center;center;center;center;center],norm(centers(l,1)));
 
-centers = centers(l,:);
+points = points(l,:);
 end
