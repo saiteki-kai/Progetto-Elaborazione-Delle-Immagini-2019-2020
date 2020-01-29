@@ -16,43 +16,61 @@ centroid = mean(centers);
 ch = convhull(centers);
 externals = centers(ch, :);
 distances = vecnorm((externals - centroid)');
-[~, index] = max(distances);
-farthest = externals(index, :);
-scatter(farthest(1), farthest(2), 'filled', 'y');
+[~, indexes] = maxk(distances, 3);
+points = externals(indexes, :);
+scatter(points(:,1), points(:,2), 'filled', 'y');
 
-% vettore coeff. angolare
-X = zeros(length(centers), 1);
-for k=1:length(centers)            
-    dy = centers(k,2) - externals(index,2);
-    dx = centers(k,1) - externals(index,1);
 
-    m = 0;
-    if (dx ~= 0) 
-        m = dy / dx; 
+ab.norm = norm(points(1,:) - points(2,:));
+bc.norm = norm(points(2,:) - points(3,:));
+ca.norm = norm(points(3,:) - points(1,:));
+
+ab.points = [points(1,:); points(2,:)];
+bc.points = [points(2,:); points(3,:)];
+ca.points = [points(3,:); points(1,:)];
+
+ab.angle = atan2(ab.points(2,1)-ab.points(2,2), ab.points(1,1)-ab.points(1,2));
+bc.angle = atan2(bc.points(2,1)-bc.points(2,2), bc.points(1,1)-bc.points(1,2));
+ca.angle = atan2(ca.points(2,1)-ca.points(2,2), ca.points(1,1)-ca.points(1,2));
+
+pp = [ab, bc, ca];
+[angles, a] = mink([pp.angle], 2);
+pairs = pp(a);
+
+[~, b] = max([pairs.norm]);
+pair = pp(b);
+angle = -1/angles(b);
+
+x = [pair.points(1,1), pair.points(2,1)];
+y = [pair.points(1,2), pair.points(2,2)];
+plot(x, y, 'r', 'LineWidth', 1);
+
+%X = zeros(length(centers), length(centers), 2);
+X = zeros(length(centers),1);
+%for j=1:length(centers)
+    for k=1:length(centers)            
+%         dy = centers(k,2) - centers(j,2);
+%         dx = centers(k,1) - centers(j,1);
+% 
+%         m = 0;
+%         if (dx ~= 0) 
+%             m = dy / dx; 
+%         end
+
+        q = pair.points(1, 2) - angle * pair.points(1, 1);
+        dist = abs(centers(k,2) - (angle * centers(k,1) + q)) ...
+            / sqrt(1 + angle ^ 2);
+        
+        %X(j, k, 1) = m - angle;
+        %X(j, k, 2) = dist;
+        X(k) = dist;
     end
+%end
 
-    % dist = norm(centers(k,:) - centers(index,:)); %%%% togliere se non serve
-    X(k) = m;
-end
-
-%Y = pdist(X);
-%Z = linkage(Y);
-T= kmeans(X, 2);
-%T = cluster(Z, 'MaxClust', 8);   % guardare con 11
-
-hold on;
-
-for k=1:length(centers)
-    x = [centers(k,1), farthest(1)];
-    y = [centers(k,2), farthest(2)];
-    plot(x, y, 'r', 'LineWidth', 1);
-end
-
-counts = histogram(T).Values;
-cline = centers(T == find(counts == 5), :);
-scatter(cline(:, 1), cline(:,2), 'filled', 'y');
-
-figure; gscatter(centers(:, 1), centers(:, 2), T);
+Y = pdist(X);
+Z = linkage(Y);
+T = cluster(Z, 'MaxClust', 4);
+figure; gscatter(centers(:, 1), centers(:, 2), T), axis image;
 
 grid = []; % rows and cols ...
 end
