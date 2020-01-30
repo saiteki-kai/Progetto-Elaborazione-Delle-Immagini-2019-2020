@@ -1,4 +1,4 @@
-function grid = create_grid(centers)
+function matrix = create_grid(centers)
 %CREATE_GRID
 
 scatter(centers(:,1), centers(:,2));
@@ -7,19 +7,27 @@ hold on;
 % assuming there must be 24 points
 if (length(centers) > 24)
     % potrebbe sbagliare se gli outliers stanno sul lato corto !!!!!!!
-    centers = exclude_outliers(centers);
+   % centers = exclude_outliers(centers);
 end
 
-scatter(centers(:,1), centers(:,2), 'filled');
-
 centroid = mean(centers);
+
+% find the external points
 ch = convhull(centers);
+ch = ch(2:end); % remove the last element (because it is duplicate)
 externals = centers(ch, :);
+
+% choose the first three furthest points
 distances = vecnorm((externals - centroid)');
 [~, indexes] = maxk(distances, 3);
 points = externals(indexes, :);
+
+scatter(externals(:,1), externals(:,2), 'filled', 'm');
 scatter(points(:,1), points(:,2), 'filled', 'y');
 
+hold on;
+
+% look for the pair with the segment of minimum length
 ab.norm = norm(points(1,:) - points(2,:));
 bc.norm = norm(points(2,:) - points(3,:));
 ca.norm = norm(points(3,:) - points(1,:));
@@ -33,49 +41,42 @@ bc.angle = (bc.points(1,2) - bc.points(2,2)) / (bc.points(1,1) - bc.points(2,1))
 ca.angle = (ca.points(1,2) - ca.points(2,2)) / (ca.points(1,1) - ca.points(2,1));
 
 pairs = [ab, bc, ca];
-[~, idx] = sort([pairs.norm]);
-pairs = pairs(idx);
-%median = pairs(2);  % median value (no min, no max) spiegare poi...
-minimun = pairs(1); %%%%%%%%%% prendere retta passante per questi punti
-angle = minimun.angle;
+[~, idx] = min([pairs.norm]);
+min_pair = pairs(idx);
+angle = min_pair.angle;
 
-x = [minimun.points(1,1), minimun.points(2,1)];
-y = [minimun.points(1,2), minimun.points(2,2)];
-hold on;
-plot(x, y, 'r', 'LineWidth', 1);
+% retta passante per i due punti
+% x = [min_pair.points(1,1), min_pair.points(2,1)];
+% y = [min_pair.points(1,2), min_pair.points(2,2)];
+% plot(x, y, 'r', 'LineWidth', 2);
 
-% retta passante per un estremo e con angolo fissato
-q = minimun.points(1, 2) - angle * minimun.points(1, 1); % serve sotto, la calcolo una volta
-x = linspace(minimun.points(1, 1) - 10, minimun.points(1, 1) + 10);
-y = angle * x + q;
-plot(x, y, 'g', 'LineWidth', 2);
+% intercept of line from two points
+q = min_pair.points(1, 2) - angle * min_pair.points(1, 1);
 
-
-%X = zeros(length(centers), length(centers), 2);
 X = zeros(length(centers),1);
-%for j=1:length(centers)
-    for k=1:length(centers)            
-%         dy = centers(k,2) - centers(j,2);
-%         dx = centers(k,1) - centers(j,1);
-% 
-%         m = 0;
-%         if (dx ~= 0) 
-%             m = dy / dx; 
-%         end
+for k=1:length(centers)
+    % calculate point-line distance
+    num = abs(centers(k,2) - (angle * centers(k,1) + q));
+    den = sqrt(1 + angle ^ 2);
+    X(k) = num / den;
+end
 
-        dist = abs(centers(k,2) - (angle * centers(k,1) + q)) ...
-            / sqrt(1 + angle ^ 2);
-        
-        %X(j, k, 1) = m - angle;
-        %X(j, k, 2) = dist;
-        X(k) = dist;
-    end
-%end
-
+% find groups of lines
 Y = pdist(X);
 Z = linkage(Y);
 T = cluster(Z, 'MaxClust', 6);
 figure; gscatter(centers(:, 1), centers(:, 2), T), axis image;
 
-grid = []; % rows and cols ...
+% fase di rimozione duplicati se serve %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+matrix = zeros(6, 4, 2);
+for r=1:6
+    c = centers(T==r, :);
+    p = [c; zeros(4 - length(c), 2)];
+    matrix(r, :, :) = p;
+end
+
+disp(matrix);
+
+
 end

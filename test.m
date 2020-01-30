@@ -3,7 +3,7 @@ close all;
 
 images = get_files("Extra");
 
-for i = 21:21%numel(images)
+for i = 62:62%numel(images)
 im = imread(images{i});
 im = im2double(im);
 
@@ -23,14 +23,12 @@ box = resized .* mask;
 % Create the abstract grid of the choco's positions
 grid = create_grid(centers);
 
-continue;
-
 % Resize measurements
-centers = centers * 5; %%% magari devi prenderli da grid EH...
+grid = grid * 5;
 radii = radii * 5;
 
 % Look for errors
-errors = check_errors(grid);
+errors = check_errors(grid, radius);
 
 show_results(im, errors);
 

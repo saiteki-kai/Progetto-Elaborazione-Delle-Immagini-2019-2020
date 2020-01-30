@@ -1,4 +1,4 @@
-function [centers, radii] = find_cioccalatini(im, mask, i)
+function [centers, radius] = find_cioccalatini(im, mask, i)
 %FIND_CIOCCALATINI
 props = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength');
 
@@ -34,6 +34,7 @@ radii = radiiDark;%[radiiBright; radiiDark];
 m = mean(radii);
 d = std(radii);
 radii = m * ones(length(radii), 1) - 2 * d;
+radius = m - 2 * d;
 
 % Verificare se abbondare o meno col raggio
 
