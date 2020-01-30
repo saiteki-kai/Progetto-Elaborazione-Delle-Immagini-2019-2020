@@ -20,7 +20,6 @@ distances = vecnorm((externals - centroid)');
 points = externals(indexes, :);
 scatter(points(:,1), points(:,2), 'filled', 'y');
 
-
 ab.norm = norm(points(1,:) - points(2,:));
 bc.norm = norm(points(2,:) - points(3,:));
 ca.norm = norm(points(3,:) - points(1,:));
@@ -29,21 +28,28 @@ ab.points = [points(1,:); points(2,:)];
 bc.points = [points(2,:); points(3,:)];
 ca.points = [points(3,:); points(1,:)];
 
-ab.angle = atan2(ab.points(2,1)-ab.points(2,2), ab.points(1,1)-ab.points(1,2));
-bc.angle = atan2(bc.points(2,1)-bc.points(2,2), bc.points(1,1)-bc.points(1,2));
-ca.angle = atan2(ca.points(2,1)-ca.points(2,2), ca.points(1,1)-ca.points(1,2));
+ab.angle = (ab.points(1,2) - ab.points(2,2)) / (ab.points(1,1) - ab.points(2,1));
+bc.angle = (bc.points(1,2) - bc.points(2,2)) / (bc.points(1,1) - bc.points(2,1));
+ca.angle = (ca.points(1,2) - ca.points(2,2)) / (ca.points(1,1) - ca.points(2,1));
 
-pp = [ab, bc, ca];
-[angles, a] = mink([pp.angle], 2);
-pairs = pp(a);
+pairs = [ab, bc, ca];
+[~, idx] = sort([pairs.norm]);
+pairs = pairs(idx);
+%median = pairs(2);  % median value (no min, no max) spiegare poi...
+minimun = pairs(1); %%%%%%%%%% prendere retta passante per questi punti
+angle = minimun.angle;
 
-[~, b] = max([pairs.norm]);
-pair = pp(b);
-angle = -1/angles(b);
-
-x = [pair.points(1,1), pair.points(2,1)];
-y = [pair.points(1,2), pair.points(2,2)];
+x = [minimun.points(1,1), minimun.points(2,1)];
+y = [minimun.points(1,2), minimun.points(2,2)];
+hold on;
 plot(x, y, 'r', 'LineWidth', 1);
+
+% retta passante per un estremo e con angolo fissato
+q = minimun.points(1, 2) - angle * minimun.points(1, 1); % serve sotto, la calcolo una volta
+x = linspace(minimun.points(1, 1) - 10, minimun.points(1, 1) + 10);
+y = angle * x + q;
+plot(x, y, 'g', 'LineWidth', 2);
+
 
 %X = zeros(length(centers), length(centers), 2);
 X = zeros(length(centers),1);
@@ -57,7 +63,6 @@ X = zeros(length(centers),1);
 %             m = dy / dx; 
 %         end
 
-        q = pair.points(1, 2) - angle * pair.points(1, 1);
         dist = abs(centers(k,2) - (angle * centers(k,1) + q)) ...
             / sqrt(1 + angle ^ 2);
         
@@ -69,7 +74,7 @@ X = zeros(length(centers),1);
 
 Y = pdist(X);
 Z = linkage(Y);
-T = cluster(Z, 'MaxClust', 4);
+T = cluster(Z, 'MaxClust', 6);
 figure; gscatter(centers(:, 1), centers(:, 2), T), axis image;
 
 grid = []; % rows and cols ...

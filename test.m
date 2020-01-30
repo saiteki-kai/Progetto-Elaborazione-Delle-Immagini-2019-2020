@@ -3,7 +3,7 @@ close all;
 
 images = get_files("Extra");
 
-for i = 9:9%numel(images)
+for i = 21:21%numel(images)
 im = imread(images{i});
 im = im2double(im);
 
