@@ -3,16 +3,32 @@ x clustering sulla retta trovata dagli estremi
   scartare i cerchi
   verificare che il clustering restituisca l'ordine corretto
   errori
+  dire se è conforme o no 
 
-DA STUDIARE
-  resize
-  canny (spiegare le soglie)
-  imfill
-  morfologia varia (motivare gli strel)
-  bwconvhull
-  bwareafilt
-  regionprops (guardare come si calcolano le feature?)
-  imadjust (spiegare gli spazi colori usati)
-  imfindcircles (motivare i parametri raggio, sensitività e soglia)
-  clustering gerarchico
-  CLASSIFICATORI
+DA STUDIARE/SPIEGARE:
+ - resize
+ - canny edge (spiegare le soglie)
+ - morfologia (motivare gli strel):
+    - imfill
+    - imopen
+    - imdilate
+ - bwareafilt
+ - bwconvhull
+ 
+ - regionprops (guardare come si calcolano le feature?)
+ 
+ - imadjust (spiegare gli spazi colori usati)
+ - imfindcircles (motivare i parametri raggio, sensitività e soglia)
+ - clustering gerarchico
+  
+  shape-classifier:
+    - perchè uso un KNN e non un altro classificatore?
+    - perchè uso l'eccentricità e non un altra feature?
+    - mostrare lo spazio delle features
+    - mostrare metriche per valutazione (matrice di confusione, ROC)
+    
+  choco-classifier:
+    - perchè uso un KNN e non un altro classificatore?
+    - perchè uso CEDD(Color and Edge Direction Descriptor) e non un altra feature?
+    - mostrare lo spazio delle features
+    - mostrare metriche per valutazione (matrice di confusione, ROC)
