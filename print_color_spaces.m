@@ -29,5 +29,5 @@ subplot(5, 4, 15); plot(imhist(lab(:,:,2))); title("A");
 subplot(5, 4, 16); plot(imhist(lab(:,:,3))); title("B");
 
 subplot(5, 4, 17); imshow(gray);
-    subplot(5, 4, 18); plot(imhist(gray)); title("Gray");
+subplot(5, 4, 18); plot(imhist(gray)); title("Gray");
 end

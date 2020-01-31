@@ -1,13 +1,13 @@
-function matrix = create_grid(centers)
+function grid = create_grid(centers)
 %CREATE_GRID
 
-scatter(centers(:,1), centers(:,2));
-hold on;
+% scatter(centers(:,1), centers(:,2));
+% hold on;
 
 % assuming there must be 24 points
 if (length(centers) > 24)
     % potrebbe sbagliare se gli outliers stanno sul lato corto !!!!!!!
-   % centers = exclude_outliers(centers);
+    % centers = exclude_outliers(centers);
 end
 
 centroid = mean(centers);
@@ -22,10 +22,10 @@ distances = vecnorm((externals - centroid)');
 [~, indexes] = maxk(distances, 3);
 points = externals(indexes, :);
 
-scatter(externals(:,1), externals(:,2), 'filled', 'm');
-scatter(points(:,1), points(:,2), 'filled', 'y');
+% scatter(externals(:,1), externals(:,2), 'filled', 'm');
+% scatter(points(:,1), points(:,2), 'filled', 'y');
 
-hold on;
+% hold on;
 
 % look for the pair with the segment of minimum length
 ab.norm = norm(points(1,:) - points(2,:));
@@ -68,15 +68,13 @@ T = cluster(Z, 'MaxClust', 6);
 figure; gscatter(centers(:, 1), centers(:, 2), T), axis image;
 
 % fase di rimozione duplicati se serve %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ......
 
-matrix = zeros(6, 4, 2);
-for r=1:6
-    c = centers(T==r, :);
-    p = [c; zeros(4 - length(c), 2)];
-    matrix(r, :, :) = p;
-end
-
-disp(matrix);
-
+% grid = zeros(6, 4, 2);
+% for r=1:6
+%     c = centers(T==r, :);
+%     p = [c; zeros(4 - length(c), 2)];
+%     grid(r, :, :) = p;
+% end
 
 end

@@ -1,3 +1,18 @@
-migliorare gli spazi colore per i cerchi
-clustering sulla retta trovata dagli estremi
-scartare i cerchi
+  migliorare gli spazi colore per i cerchi
+x clustering sulla retta trovata dagli estremi
+  scartare i cerchi
+  verificare che il clustering restituisca l'ordine corretto
+  errori
+
+DA STUDIARE
+  resize
+  canny (spiegare le soglie)
+  imfill
+  morfologia varia (motivare gli strel)
+  bwconvhull
+  bwareafilt
+  regionprops (guardare come si calcolano le feature?)
+  imadjust (spiegare gli spazi colori usati)
+  imfindcircles (motivare i parametri raggio, sensitività e soglia)
+  clustering gerarchico
+  CLASSIFICATORI
