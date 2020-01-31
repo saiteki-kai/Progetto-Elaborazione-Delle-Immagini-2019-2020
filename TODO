@@ -1,11 +1,13 @@
 DA IMPLEMENTARE:
 - migliorare gli spazi colore per i cerchi
+- generare dati dai cerchi trovati
 - per scatole rettangolari:
     x clustering sulla retta trovata dagli estremi
     - scartare i cerchi
     x verificare che il clustering restituisca l'ordine corretto
     - check errori
 - per scatole quadrate:
+    - aggiornare i dati e le etichette
     - scartare cerchi simili
     - migliorare classificatore FerreroRocher o Rigetto
     - classificare i cerchi come FerreroRocher o Rigetto
