@@ -1,9 +1,19 @@
-  migliorare gli spazi colore per i cerchi
-x clustering sulla retta trovata dagli estremi
-  scartare i cerchi
-  verificare che il clustering restituisca l'ordine corretto
-  errori
-  dire se è conforme o no 
+DA IMPLEMENTARE:
+- migliorare gli spazi colore per i cerchi
+- per scatole rettangolari:
+    x clustering sulla retta trovata dagli estremi
+    - scartare i cerchi
+    x verificare che il clustering restituisca l'ordine corretto
+    - check errori
+- per scatole quadrate:
+    - scartare cerchi simili
+    - migliorare classificatore FerreroRocher o Rigetto
+    - classificare i cerchi come FerreroRocher o Rigetto
+    - contare FerreroRocher
+    - contare bollini
+- dire se è conforme o no
+
+-------------------------------------------------------------------------------
 
 DA STUDIARE/SPIEGARE:
  - resize
