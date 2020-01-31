@@ -1,44 +1,42 @@
-function mask = find_box(im)
-%FIND_BOX Find the box in the image.
 
-%print_color_spaces(im);
+function out = findbox(image)
+    image = rgb2gray(image);
+    
+    t_high = 0.137; % scelta sperimentalmente 0.137
+    sigma = 0.8; % dato N = 5 sigma ricavata da N = (2.5 * sigma) * 2 - 1
+    [bw, ~] = edge(image, 'canny', t_high, sigma);
+    
+    bw = imdilate(bw, strel('disk', 3));
+    bw = imfill(bw, 'holes');
+    bw = imopen(bw, strel('disk', 9));
+    bw = bwareafilt(bw, 1);
+    
+    out = bwconvhull(bw);
+end
 
-%resized = histeq(im);
-%resized = imadjust(im, [0.1 0.99], [], 0.8);
-gray = rgb2gray(im); % GRAY
-%gray(:,:,1) = 0;
-%gray = gray(:,:,2);
-%gray = ycbcr2rgb(gray);
-%figure,imshowpair(gray(:,:,1), gray(:,:,2), 'montage');
-%gray = rgb2gray(gray);
-%figure, imhist(gray);
 
-% Spiegare perchè una 5x5 (guarda l'immagine 1/5)..?
-sigma = 0.8; % 5x5 <- [0.8*2.5]*2+1 
-otsu = graythresh(gray); % Perchè otsu..?
+function test()
+    images = get_files('Acquisizioni');
+    for i = 1:numel(images)
+        im2 = im2double(imread(images{i}));
+        [r, c, ~] = size(im2);
+        im = imresize(rgb2gray(im2), 1/5);
+        
+        T = 0.137; % scelta sperimentalmente 0.137
+        sigma = 0.8; % dato N = 5 sigma ricavata da N = (2.5 * sigma) * 2 - 1
+        box = findbox(im);    
+        box = imresize(box, [r c]);
 
-% m = mean(gray, 'all');
-% me = std(gray, 1, 'all')^2;
-% 
-% lower = (m - me * sigma);
-% higher = (m + me * sigma);
-% 
-% plot(imhist(gray));
-% hold on;
-% 
-% xline(m * 255, 'r');
-% xline(lower * 255, 'y');
-% xline(lower * 0.4 * 255, 'y');
-% xline(higher * 255);
+        imwrite(im2 .* box, ['Images/' num2str(i) '.jpg']);
+        imwrite(box, ['Masks/' num2str(i) '.jpg']);
 
-bw = edge(gray, 'canny', 0.2, sigma);
+        shape = shape_classifier((box .* im2), box, 1);
 
-%figure, imshow(bw);
-bw = imdilate(bw, strel('disk', 11)); % 4
-bw = imfill(bw, 'holes');
+        if shape{1} == '1'
+            imwrite(box .* im2, ['MASKS_TESTS/Rettangolari/' num2str(i) '.jpg']);
+        else
+            imwrite(box .* im2, ['MASKS_TESTS/Quadrate/' num2str(i) '.jpg']);
+        end
 
-bw = bwareafilt(bw, 1);
-bw = imopen(bw, strel('diamond', 3)); % 2
-
-mask = bwconvhull(bw);
+    end
 end
