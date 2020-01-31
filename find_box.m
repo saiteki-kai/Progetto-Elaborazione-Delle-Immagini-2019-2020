@@ -1,5 +1,5 @@
 
-function out = findbox(image)
+function out = find_box(image)
     image = rgb2gray(image);
     
     t_high = 0.137; % scelta sperimentalmente 0.137
