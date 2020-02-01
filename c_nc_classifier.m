@@ -1,12 +1,36 @@
-function out = choco_classifier(image, show)
-    create_descriptor_files();
-    load('features.mat', 'features');
-    [images, labels]= readlists();
-    %labels = readfile("B/labels.list");
-    cv = cvpartition(labels,'Holdout',0.2);
-    c = init_classifier(features, labels, cv);
-    [tr, ts] = test_classifier(features, labels, cv, c);
-    save('classifier.mat', 'c', 'tr', 'ts');
+% C_NC_CLASSIFIEER 
+% CLASSI (CHOCO or NOT_CHOCO)
+
+% assicurarsi di aggiungere esempi:
+%  - di ferrero rocher senza bollini
+%  - di ferrero rocher con cambi d'illuminazione
+%  - di pezzi di scatola (trasparente, oro)
+%  - di altri cioccolatini (non ferrero rocher)
+%    che se sono presenti rappresentano errori
+%  - ATTENZIONE ALCUNI DATI SONO RIPETUTI (considerare)
+
+% Problemi:
+% con la feature scelta non sempre si è in grado di dire
+% se un ferrero rocher è effettivamente tale
+% la medesima cosa vale anche per tutto ciò che non
+% è un ferrero rocher (FP, FN) presenti
+
+% è possibile aumentare il numero di immagini di nc
+% aumentando cosi la predisposizione del classificatore
+% a rispondere con classe di rigetto
+% AUMENTO RECALL ABBASSANDO PRECISIONE
+% è più importante trovare gli errori
+% piuttosto che dire che è tutto corretto
+
+function out = c_nc_classifier(image, show)
+%     create_descriptor_files();
+%     load('features.mat', 'features');
+%     %[images, labels]= readlists();
+%     labels = readfile("B/labels.list");
+%     cv = cvpartition(labels,'Holdout',0.2);
+%     c = init_classifier(features, labels, cv);
+%     [tr, ts] = test_classifier(features, labels, cv, c);
+%     save('classifier.mat', 'c', 'tr', 'ts');
 
     load('classifier.mat', 'c');
     
@@ -46,6 +70,7 @@ function out = compute_descriptors(image)
 %      image = rgb2gray(image);
 %      out = compute_lbp(image);
 end
+
 function out = readfile(path)
   f=fopen(path);
   l = textscan(f,'%s');
