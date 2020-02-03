@@ -1,11 +1,36 @@
-function [centers, radius] = find_cioccalatini(im, mask, i)
+function [centers, radius, rmin, rmax] = find_cioccalatini(im, mask, i)
 %FIND_CIOCCALATINI
-props = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength');
+props = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength', 'BoundingBox', 'Orientation', 'MajorAxisLength', ...
+ 'MinorAxisLength', 'Eccentricity', 'Centroid');
 
-rmax = fix(props.MinorAxisLength / (7.5));
-rmin = fix(rmax / 3);
+phi = linspace(0,2*pi,50);
+cosphi = cos(phi);
+sinphi = sin(phi);
 
-bright = imadjust(im, [], [], 0.5);
+xbar = props.Centroid(1);
+ybar = props.Centroid(2);
+
+a = props.MajorAxisLength/2;
+b = props.MinorAxisLength/2;
+
+theta = pi*props.Orientation/180;
+R = [ cos(theta)   sin(theta)
+     -sin(theta)   cos(theta)];
+
+xy = [a*cosphi; b*sinphi];
+xy = R*xy;
+
+xxx = xy(1,:) + xbar;
+yyy = xy(2,:) + ybar;
+
+rmax = 40; %fix(props.MinorAxisLength / 9);
+rmin = 15; %fix(rmax / 3);
+
+disp(props.MinorAxisLength);
+disp([rmin, rmax]);
+
+% rmin * 3 < rmax
+% rmax - rmin < 100
 
 % cambiare un canale e riconvertire in grigio
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13,13 +38,17 @@ bright = imadjust(im, [], [], 0.5);
 % print_color_images(bright);
 % figure;
 
+bright = imadjust(im, [], [], 0.5);
 dark = imadjust(im, [], [], 1.5);
 
 hsv = rgb2hsv(bright);
 ycbcr = rgb2ycbcr(im);
 
+%hsv = imtophat(hsv, strel('disk', rmin));
 imDark = hsv(:,:,2);
 imBright = im(:,:,3);
+
+%imDark(~mask) = 1;
 
 % imDark = imDark > 0.5;
 % imDark = imclose(imDark, strel('disk', rmax));
@@ -32,14 +61,17 @@ imBright = im(:,:,3);
 [centersDark, radiiDark] = imfindcircles(imDark, [rmin rmax], ...
     'Method', 'TwoStage', ...
     'Sensitivity', 0.9, ...
-    'EdgeThreshold', 0.15, ...
+    'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'dark');
 
 [centersBright, radiiBright] = imfindcircles(imBright, [rmin rmax], ...
     'Method', 'TwoStage', ...
-    'Sensitivity', 0.85, ...
-    'EdgeThreshold', 0.1, ...
+    'Sensitivity', 0.9, ...
+    'EdgeThreshold', 0.15, ...
     'ObjectPolarity', 'bright');
+
+% centersDark = centersDark(1:24, :);
+% radiiDark = radiiDark(1:24, :);
 
 centers = centersDark;%[centersBright; centersDark];
 radii = radiiDark;%[radiiBright; radiiDark];
@@ -56,19 +88,20 @@ radius = m - 2 * d;
 
 % h = figure;
 
-subplot(1,2,1);
-imshow(imBright);title("Bright");
-hold on;
-viscircles(centersBright, m * ones(length(radiiBright), 1) -     d, 'EdgeColor', 'r', 'LineWidth', 1); axis image;
-
-subplot(1,2,2);
+% subplot(1,2,1);
+% imshow(imBright);title("Bright");
+% hold on;
+% viscircles(centersBright, m * ones(length(radiiBright), 1) - d, 'EdgeColor', 'r', 'LineWidth', 3); axis image;
+% 
+% subplot(1,2,2);
 imshow(imDark);title("Dark");
 hold on;
-viscircles(centersDark, m * ones(length(radiiDark), 1) - d, 'EdgeColor', 'b', 'LineWidth', 1); axis image;
+    plot(xxx,yyy,'r','LineWidth',2);
+viscircles(centersDark, radiiDark, 'EdgeColor', 'b', 'LineWidth', 3); axis image;
+rectangle('Position', props.BoundingBox, 'EdgeColor', 'r');
 
 % saveas(h, "./Tests/circles" + i + ".jpg");
 % close(h);
-
 
 %BOH
 
