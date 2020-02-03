@@ -8,7 +8,7 @@ DA IMPLEMENTARE:
 
 - migliorare il raggio medio alla fine della find_cioccolatini
 
-- valutare se è meglio lasciare lo sfondo nero o bianco per trovare i cerchi
+- valutare se è meglio lasciare lo sfondo nero o bianco per trovare i cerchi (il nero era meglio)
 
 - per scatole rettangolari:
     - scartare i cerchi(apparte caso particolare immagine 10-11) apposto
@@ -28,7 +28,7 @@ DA IMPLEMENTARE:
 -------------------------------------------------------------------------------
 
 DA STUDIARE/SPIEGARE:
- - resize
+ - resize (bicubic interpolation)
  - canny edge (spiegare le soglie)
  - morfologia (motivare gli strel):
     - imfill
