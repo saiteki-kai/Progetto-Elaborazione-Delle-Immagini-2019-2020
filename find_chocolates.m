@@ -6,11 +6,9 @@
 function [centers, radius] = find_chocolates(image, mask)
     shape = shape_classifier(image, mask, 0);
     if shape{1} == '2'
-        [centers, radii] = ...
-            handle_square_boxes();
+        [centers, radii] = handle_square_boxes();
     else
-        [centers, radii] = ...
-            handle_rectangle_boxes(image, mask);
+        [centers, radii] = handle_rectangle_boxes(image, mask);
     end
     
     m = mean(radii);
@@ -26,8 +24,7 @@ end
 
 % fuzione che gestisce i cerchi delle scatole rettangolari
 
-function [centers, radii] ...
-    = handle_rectangle_boxes(image, mask)
+function [centers, radii] = handle_rectangle_boxes(image, mask)
 
     % oggetti più piccoli o più grandi di [rmin, rmax]
     % non verrebbero trovati ma contando poi i cioccolatini si vedrebbe
@@ -47,6 +44,11 @@ function [centers, radii] ...
     rmax = fix(props.MinorAxisLength / (8 - alfa));
     rmin = fix(rmax / 3);
     
+    
+    % (soltanto per test)
+    % showellipse(image, props);
+    
+    
     % aumento il contrasto per trovare meglio i cerchi
     % perchè i cioccolatini cosi risultano
     % più scuri dello sfondo (che li circonda)
@@ -55,6 +57,8 @@ function [centers, radii] ...
     % influenzano notevolmente il risultato
     % equalizzo per confontare meglio immagini con
     % condizioni di luci diverse
+    
+ 
     
     hsv = rgb2hsv(image);
     Sat = hsv(:,:,2);
@@ -75,7 +79,7 @@ function [centers, radii] ...
     
     
     % tutti i cerchi (x,y) che non rispettano una certa metrica li tolgo
-    
+     
     centers = centers(metric > 0.1, :);
     radii = radii(metric > 0.1);
     
@@ -89,12 +93,14 @@ function [centers, radii] ...
     box_mask = I > 0;
     box_mask = imfill(box_mask, 'holes');
     box_mask = imerode(box_mask, strel('disk', 9));
+    
+    % (solo a scopo visivo)
     imDark = (~box_mask) + hsv(:,:,2);
     
     
     % tutti i cerchi (x,y) che non appartengono alla scatola li tolgo
     
-    [centers, radii] = rmexterncircles(imDark, box_mask, centers, radii, rmin);
+    [centers, radii] = rmexterncircles(image, box_mask, centers, radii, rmin);
     
     
     % aggiusto dimensioni dei raggi
@@ -102,20 +108,23 @@ function [centers, radii] ...
     
     m = mean(radii);
     d = std(radii);
-    radii = m * ones(length(radii), 1) - 2 * d;
+    radii = m * ones(length(radii), 1); % - 2 * d;
     
     
     % tolgo gli overlap
     
     [centers, radii] = rmoverlap(centers, radii, 1);
-
+    
+    % (soltanto per test)
+    showcircles(imDark, centers, radii, 0);
 end
 
 
 % fuzione che gestisce i cerchi delle scatole quadrate
 
 function [centers, radii] = handle_square_boxes()
-    % ...
+    centers = [];
+    radii = [];
 end
 
 
@@ -181,26 +190,6 @@ end
 % ------------------------------------------------------------------------
 
 
-
-% funzione soltanto a scopo di test
-
-function test()
-    images = get_files('Acquisizioni');
-    for i = 1:numel(images)
-        im = imread(images{i});
-        resized = imresize(im, 1/5);
-
-        mask = find_box(resized);
-        resized = im2double(resized) .* mask;
-
-        [centers, radii] = find_chocolates(image, mask);
-        
-        % se voglio salvare le immagini valore ~ 0
-        showcircles(resized, centers, radii, 0);
-    end
-end
-
-
 % mostro i cerchi trovati
 % prendendo in input immagine sulla quale visualizzarli
 % i centri e raggi
@@ -214,11 +203,11 @@ function showcircles(image, centers, radii, i)
     viscircles(centers, ...
         m * ones(length(radii), 1), ...
         'EdgeColor', 'b', ...
-        'LineWidth', 2); axis image;
+        'LineWidth', 3); axis image;
     if i ~= 0
         saveas(h, "./Test/Dark/" + i + ".jpg");
+        close(h);
     end
-    close(h);
 end
 
 

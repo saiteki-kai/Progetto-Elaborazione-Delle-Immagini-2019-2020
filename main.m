@@ -40,3 +40,21 @@
 %     iscomplaiant = false;
 % 
 % end
+
+
+% funzione soltanto a scopo di test
+
+images = get_files('Acquisizioni/');
+for i = 1:1%numel(images)
+    im = imread(images{i});
+    
+    resized = imresize(im, 1/5);
+
+    mask = find_box(resized);
+    resized = im2double(resized) .* mask;
+
+    [centers, radius] = find_chocolates(resized, mask);
+end
+
+
+
