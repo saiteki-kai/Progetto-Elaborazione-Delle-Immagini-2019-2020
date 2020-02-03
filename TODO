@@ -1,11 +1,18 @@
 DA IMPLEMENTARE:
-- migliorare gli spazi colore per i cerchi
+
 - generare dati dai cerchi trovati
+
+- migliorare la scelta del range di [rmin, rmax]
+
+- migliorare il raggio medio alla fine della find_cioccolatini
+
+- valutare se è meglio lasciare lo sfondo nero o bianco per trovare i cerchi
+
 - per scatole rettangolari:
-    x clustering sulla retta trovata dagli estremi
-    - scartare i cerchi
-    x verificare che il clustering restituisca l'ordine corretto
+    - scartare i cerchi(apparte caso particolare immagine 10-11) apposto
+    - ricostruire eventuali cerchi mancanti
     - check errori
+
 - per scatole quadrate:
     - aggiornare i dati e le etichette
     - scartare cerchi simili
@@ -13,6 +20,7 @@ DA IMPLEMENTARE:
     - classificare i cerchi come FerreroRocher o Rigetto
     - contare FerreroRocher
     - contare bollini
+
 - dire se è conforme o no
 
 -------------------------------------------------------------------------------
@@ -30,6 +38,7 @@ DA STUDIARE/SPIEGARE:
  - regionprops (guardare come si calcolano le feature?)
  
  - imadjust (spiegare gli spazi colori usati)
+ - adapthisteq
  - imfindcircles (motivare i parametri raggio, sensitività e soglia)
  - clustering gerarchico
   
@@ -38,7 +47,13 @@ DA STUDIARE/SPIEGARE:
     - perchè uso l'eccentricità e non un altra feature?
     - mostrare lo spazio delle features
     - mostrare metriche per valutazione (matrice di confusione, ROC)
-    
+  
+  c_cn-classifier:
+    - perchè uso un KNN e non un altro classificatore?
+    - perchè uso CEDD(Color and Edge Direction Descriptor) e non un altra feature?
+    - mostrare lo spazio delle features
+    - mostrare metriche per valutazione (matrice di confusione, ROC)
+  
   choco-classifier:
     - perchè uso un KNN e non un altro classificatore?
     - perchè uso CEDD(Color and Edge Direction Descriptor) e non un altra feature?

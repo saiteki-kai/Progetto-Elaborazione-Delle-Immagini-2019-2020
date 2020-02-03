@@ -1,4 +1,13 @@
 
+% fun = @(block_struct) myfun(block_struct.data);
+%     out = blockproc(S, [81 81], fun);
+%     imshow(out);
+%     function out = myfun(im)
+%         T = graythresh(im);
+%         out = im < T;
+%     end
+
+
 % I = hsv(:,:,2) + (1 - im2double(image(:,:,3)));
 
 % im = imread('Images/12.jpg');
