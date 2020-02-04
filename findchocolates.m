@@ -3,8 +3,7 @@
 % ritorna i centri e il raggio dei cioccolatini
 % stimati in base al tipo di scatola
 
-function [centers, radius] = findchocolates(image, mask)
-    shape = shape_classifier(image, mask, 0);
+function [centers, radius] = findchocolates(image, mask, shape)
     
     props = regionprops(mask, ...
         'MajorAxisLength', ...
@@ -14,9 +13,9 @@ function [centers, radius] = findchocolates(image, mask)
         'Orientation', ...
         'BoundingBox');
     
-    if shape{1} == '2'
+   if shape{1} == '2'
         [centers, radii] = handle_square_boxes(image, mask, props, 1.5);
-    else
+   else
         [centers, radii] = handle_rectangle_boxes(image, mask, props, 0.75);
     end
     

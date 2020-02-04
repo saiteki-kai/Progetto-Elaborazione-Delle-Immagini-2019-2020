@@ -10,20 +10,22 @@ mask = findbox(resized);
 box = resized .* mask;
 
 % Check the shape
-shape = classification.getshape(box, mask);
+shape = classification.shape_classifier(box, mask, 0);
 
 % Find the chocolates
-[centers, radii] = findchocolates(box, mask, shape);  
+[centers, radius] = findchocolates(box, mask, shape); 
 
-% Look for errors
-if shape == "rectangle"
-    grid = creategrid(centers);
-    errors = checkerrors(grid, radii);
-else
-    errors = checkerrors(centers, radii);
-end
+utils.showcircles(box, centers, radius, 0);
 
-% Show results
-showresults(im, errors);
+% % Look for errors
+% if shape == "1"
+%     grid = creategrid(centers);
+%     errors = checkerrors(grid, radii);
+% else
+%     errors = checkerrors(centers, radii);
+% end
+% 
+% % Show results
+% showresults(im, errors);
 
 end
