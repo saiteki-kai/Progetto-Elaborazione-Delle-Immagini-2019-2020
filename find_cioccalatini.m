@@ -23,8 +23,8 @@ xy = R*xy;
 xxx = xy(1,:) + xbar;
 yyy = xy(2,:) + ybar;
 
-rmax = 40; %fix(props.MinorAxisLength / 9);
-rmin = 15; %fix(rmax / 3);
+rmax = fix(props.MinorAxisLength / 7.5);
+rmin = fix(rmax / 3);
 
 disp(props.MinorAxisLength);
 disp([rmin, rmax]);
@@ -50,17 +50,15 @@ imBright = im(:,:,3);
 
 %imDark(~mask) = 1;
 
-% imDark = imDark > 0.5;
-% imDark = imclose(imDark, strel('disk', rmax));
-% imDark = imerode(imDark, strel('disk', fix(rmin/4)));
+
 % 
 % imBright = imDark .* adapthisteq(rgb2gray(im));
 % imDark = imDark .* hsv(:,:,2);
 
 
-[centersDark, radiiDark] = imfindcircles(imDark, [rmin rmax], ...
+[centersDark, radiiDark, metric] = imfindcircles(imDark, [rmin rmax], ...
     'Method', 'TwoStage', ...
-    'Sensitivity', 0.9, ...
+    'Sensitivity', 0.92, ...
     'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'dark');
 
@@ -72,6 +70,15 @@ imBright = im(:,:,3);
 
 % centersDark = centersDark(1:24, :);
 % radiiDark = radiiDark(1:24, :);
+
+imDark = imDark > 0.5;
+imDark = imclose(imDark, strel('disk', rmax));
+imDark = imerode(imDark, strel('disk', fix(rmin/4)));
+
+disp(metric);
+
+centersDark = centersDark(metric > 0.2, :);
+radiiDark = radiiDark(metric > 0.2);
 
 centers = centersDark;%[centersBright; centersDark];
 radii = radiiDark;%[radiiBright; radiiDark];
