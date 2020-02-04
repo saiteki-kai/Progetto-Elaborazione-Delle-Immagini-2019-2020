@@ -1,4 +1,39 @@
 
+% fun = @(block_struct) myfun(block_struct.data);
+%     out = blockproc(S, [81 81], fun);
+%     imshow(out);
+%     function out = myfun(im)
+%         T = graythresh(im);
+%         out = im < T;
+%     end
+
+
+% I = hsv(:,:,2) + (1 - im2double(image(:,:,3)));
+
+% im = imread('Images/12.jpg');
+% im = imresize(im, 1/5);
+% 
+% fun = @(block_struct) myfun(block_struct.data);
+% out = blockproc(im, [5 5], fun);
+% imagesc(out);
+% 
+% function out = myfun(image)
+%     [N, M, ~] = size(image);
+%     out = ones(N, M);
+%     if mean(image(:)) ~= 0
+%         class = c_nc_classifier(image, 0);
+%         out = out .* str2double(class{1});
+%     else
+%         out = out - 1;
+%     end
+% end
+
+
+
+
+
+
+
 % function mask = find_box2(im)
 % %FIND_BOX Find the box in the image.
 % 
