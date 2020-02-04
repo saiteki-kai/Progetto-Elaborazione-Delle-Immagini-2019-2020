@@ -1,5 +1,5 @@
 function grid = creategrid(centers)
-%CREATE_GRID
+%CREATEGRID
 
 % scatter(centers(:,1), centers(:,2));
 % hold on;

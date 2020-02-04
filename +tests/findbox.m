@@ -1,5 +1,5 @@
 function findbox()
-images = utils.getFiles('../Acquisizioni');
+images = utils.getfiles('Acquisizioni');
 
 for i = 1:numel(images)
     im2 = im2double(imread(images{i}));
