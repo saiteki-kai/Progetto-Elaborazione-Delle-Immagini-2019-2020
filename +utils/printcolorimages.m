@@ -1,4 +1,4 @@
-function print_color_images(im)
+function printcolorimages(im)
 rgb = im;
 ycbcr = rgb2ycbcr(im);
 hsv = rgb2hsv(im);

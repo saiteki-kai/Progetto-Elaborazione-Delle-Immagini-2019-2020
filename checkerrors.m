@@ -1,9 +1,19 @@
-function errors = check_errors(grid, radius, shape)
+function errors = checkerrors(centers, radius)
 %CHECK_ERRORS ...
 
 % maybe a struct ...
 % la griglia serve solo per le rettangolari
 % griglia come parametro opzionale
+
+[n, m] = size(centers);
+
+% rectangular
+if [n, m] == [4, 6]
+    
+else
+    
+end
+ 
 end
 
 

@@ -1,4 +1,4 @@
-function print_color_spaces(im)
+function printcolorspaces(im)
 %PRINT_COLOR_SPACES Shows different color spaces of an image.
 
 rgb = im;

@@ -1,44 +1,42 @@
 clear;
 close all;
 
-images = get_files("Extra");
+images = getfiles("Extra");
 
-%prob = [11, 32, 37, 41, 49];
+%prob = [4, 11, 32, 37, 41, 49];
 prob = [10, 9];
 
+rr = zeros(numel(images), 2);
 for i = 1:numel(images)
 
 if (not(ismember(prob, i))) 
     continue;
 end
-    
+
 im = imread(images{i});
-im = im2double(im);
 
 % Downscale the image
 [h, w, ~] = size(im);
 resized = imresize(im, 1/5);
 
+% If the size of the output image is not an integer, 
+% then imresize does not use the scale specified.
+% imresize uses ceil when calculating the output image size.
+im = im2double(im);
+
 % Find the box
-mask = find_box(resized);
+mask = findbox(resized);
 box = resized .* mask;
 
-% e = regionprops(mask, 'Eccentricity');
-% if (e.Eccentricity < 0.53)
-%     disp("quadrato");
-%     continue;
-% else
-%     disp("rettangolo");
-% end
-
 % Find the chocolates
-[centers, radius] = find_cioccalatini(box, mask, i);
+[centers, radius, rmin, rmax] = findcioccalatini(box, mask, i);                
+%rr(i, :) = [rmin, rmax];
 
-continue;
 % Square / Non Square
 % shape = shape_classifier(box, mask, 1);
-
+% 
 % Create the abstract grid of the choco's positions
+% pezzo per cercare di risolvere gli outliers
 figure(i);
 imshow(box);
 hold on;
@@ -48,24 +46,45 @@ plot(centers(idx,1), centers(idx,2), 'y', 'LineWidth', 4);
 
 scatter(centers(:,1), centers(:,2), 50, 'filled', 'g');
 scatter(centers(idx,1), centers(idx,2), 50, 'filled', 'r');
-pause(1);
-%grid = create_grid(centers);
 
+
+
+folder = "";
+e = regionprops(mask, 'Eccentricity');
+if (e.Eccentricity < 0.53)
+    disp("quadrato");
+    folder = "TrainingSet/Quadrate";
+    % continue;
+else
+    folder = "TrainingSet/Rettangolari";
+    disp("rettangolo");
+    % grid = create_grid(centers);
+end
 
 % Resize measurements
-% grid = grid * 5;
-% radius = radius * 5;
+%grid = grid * 5;
+centers = centers * 5;
+radius = fix(radius * 10);
+
+%generate_data(im, centers, radius, folder, i);
+
+% figure;
+% imshow(im);
+% hold on;
+% 
+% g1 = grid(:,:,1);
+% g2 = grid(:,:,2);
+% scatter(g1(:), g2(:), 'filled', 'g');
 
 % Look for errors
 %errors = check_errors(grid, radius, shape);
 
-%show_results(im, errors);
-
-% %%% RISCALARE LE MASCHEREEEE E NON LE IMMAGINI e scriverlo nel progetto!!!!!!
+% RISCALARE LE MASCHEREEEE E NON LE IMMAGINI e scriverlo nel progetto!!!!!!
 
 % mask = imresize(mask, [h w]); % Deve avere la stessa dimensione
 % out = im .* mask;
 
+%show_results(im, errors);
 end
 
 

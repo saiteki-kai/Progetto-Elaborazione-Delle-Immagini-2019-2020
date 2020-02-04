@@ -1,5 +1,5 @@
-function show_results(im, errors)
-%SHOW_RESULTS
+function showresults(im, errors)
+%SHOWRESULTS
 
 imshow(im);
 hold on;
