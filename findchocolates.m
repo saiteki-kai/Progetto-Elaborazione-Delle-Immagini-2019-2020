@@ -77,21 +77,39 @@ end
 % fuzione che gestisce i cerchi delle scatole quadrate
 
 function [centers, radii] = handle_square_boxes(image, mask, props, alfa)
-    rmax = 45;%fix(props.MinorAxisLength / (6 + alfa));%45
-    rmin = 15;%fix(rmax / 3);%15
+    rmax = 45;%45
+    rmin = 15;%15
     
     ycbcr = rgb2ycbcr(image);
     Cb = ycbcr(:,:,2);
     imDark = (~mask) + Cb;
     imDark = adapthisteq(imDark);
-    
+
     [centers, radii, metrics] = imfindcircles(imDark, [rmin rmax], ...
         'Method', 'TwoStage', ...
         'Sensitivity', 0.85, ...
         'EdgeThreshold', 0.1, ...
         'ObjectPolarity', 'dark');
     
-    [centers, radii] = circlefilter(centers, radii, metrics, image, rmin, rmax); 
+    [centers1, radii1] = circlefilter(centers, radii, metrics, image, rmin, rmax); 
+    
+    hsv = rgb2hsv(image);
+    Sat = hsv(:,:,2);
+    imDark = (~mask) + Sat;
+    imDark = adapthisteq(imDark);
+    
+    [centers, radii, metrics] = imfindcircles(imDark, [rmin rmax], ...
+        'Method', 'TwoStage', ...
+        'Sensitivity', 0.9, ...
+        'EdgeThreshold', 0.1, ...
+        'ObjectPolarity', 'dark');
+    
+    [centers2, radii2] = circlefilter(centers, radii, metrics, image, rmin, rmax);
+    
+    centers = [centers1; centers2];
+    radii = [radii1; radii2];
+    
+    [centers, radii] = rmoverlap(centers, radii, 1);
 end
 
 

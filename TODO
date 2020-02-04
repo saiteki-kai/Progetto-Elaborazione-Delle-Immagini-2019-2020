@@ -5,6 +5,7 @@
         % elimino i cerchi esterni alla scatola
         % elimino i cerchi overlappati
         % ricostruisco io alcuni cerchi
+    % assumiamo i cioccolatini siano circolari
     % se la scatola è rettangolare
         % costruisco una griglia
         % classifico i cioccolatini come (1,2,3,4) classi:
@@ -30,28 +31,23 @@
 
 DA IMPLEMENTARE:
 
-- NORMALIZZARE LE FEATURES
-
-- generare dati dai cerchi trovati
+- normalizzare le features
+- documentazione varia
+- generare dati dai cerchi trovati e etichettarli
+- migliorare i classificatori
 
 - migliorare la scelta del range di [rmin, rmax]
-
-- migliorare il raggio medio alla fine della find_cioccolatini
-
+- fixare overlap(apparte caso particolare immagine 10-11-36)
+- migliorare radius alla fine della find_cioccolatini
 - valutare se è meglio lasciare lo sfondo nero o bianco per trovare i cerchi (il nero era meglio)
 
 - per scatole rettangolari:
-    - scartare i cerchi(apparte caso particolare immagine 10-11-36) apposto
     - ricostruire eventuali cerchi mancanti
     - check errori
 
 - per scatole quadrate:
-    - aggiornare i dati e le etichette
-    - scartare cerchi simili
-    - migliorare classificatore FerreroRocher o Rigetto
-    - classificare i cerchi come FerreroRocher o Rigetto
-    - contare FerreroRocher
-    - contare bollini
+    - ringrandire i cerchi
+    - check errori (come trovo gli errori problemi dovuti classe di rigetto)
 
 - dire se è conforme o no
 
