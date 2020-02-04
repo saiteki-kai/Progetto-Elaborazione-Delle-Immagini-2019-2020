@@ -1,4 +1,4 @@
-function out = main(im)
+function iscompliant = main(im)
 %MAIN 
 
 % Downscale the image
@@ -23,9 +23,9 @@ else
     errors = checkerrors(centers, radii);
 end
 
+iscompliant = isempty(errors);
+
 % Show results
 showresults(im, errors);
-
-out = isempty(errors);
 
 end

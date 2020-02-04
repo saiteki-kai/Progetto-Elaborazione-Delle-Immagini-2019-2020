@@ -42,25 +42,25 @@ ca.angle = (ca.points(1,2) - ca.points(2,2)) / (ca.points(1,1) - ca.points(2,1))
 
 pairs = [ab, bc, ca];
 [~, idx] = sort([pairs.norm]);
-min_pair = pairs(idx(1));
-max_pair = pairs(idx(2));
-min_angle = min_pair.angle;
-max_angle = max_pair.angle;
+minPair = pairs(idx(1));
+maxPair = pairs(idx(2));
+minAngle = minPair.angle;
+maxAngle = maxPair.angle;
 
 % retta passante per i due punti
-x = [min_pair.points(1,1), min_pair.points(2,1)];
-y = [min_pair.points(1,2), min_pair.points(2,2)];
+x = [minPair.points(1,1), minPair.points(2,1)];
+y = [minPair.points(1,2), minPair.points(2,2)];
 plot(x, y, 'r', 'LineWidth', 2);
 
 % intercept of line from two points
-q = min_pair.points(1, 2) - min_angle * min_pair.points(1, 1);
+q = minPair.points(1, 2) - minAngle * minPair.points(1, 1);
 
 % distances
 X = zeros(length(centers),1);
 for k=1:length(centers)
     % calculate point-line distance
-    num = abs(centers(k,2) - (min_angle * centers(k,1) + q));
-    den = sqrt(1 + min_angle ^ 2);
+    num = abs(centers(k,2) - (minAngle * centers(k,1) + q));
+    den = sqrt(1 + minAngle ^ 2);
     X(k) = num / den;
 end
 
@@ -70,7 +70,7 @@ Z = linkage(Y);
 T = cluster(Z, 'MaxClust', 7);
 figure; gscatter(centers(:, 1), centers(:, 2), T), axis image;
 
-q = max_pair.points(1, 2) - max_angle * max_pair.points(1, 1);
+q = maxPair.points(1, 2) - maxAngle * maxPair.points(1, 1);
 
 grid = zeros(6, 4, 2);
 for r=1:6
@@ -80,8 +80,8 @@ for r=1:6
     % sort by distance
     dist = zeros(length(c), 1);
     for k=1:length(c)
-        num = abs(c(k,2) - (max_angle * c(k,1) + q));
-        den = sqrt(1 + max_angle ^ 2);
+        num = abs(c(k,2) - (maxAngle * c(k,1) + q));
+        den = sqrt(1 + maxAngle ^ 2);
         dist(k) = num / den;
     end
     [~, indexes] = sort(dist);

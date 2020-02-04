@@ -7,13 +7,15 @@ function errors = checkerrors(centers, radius)
 
 [n, m] = size(centers);
 
-% rectangular
-if [n, m] == [4, 6]
-    
+if [n, m] == [4, 6] % no sense warning
+    % rectangular
 else
-    
+    % squared
 end
- 
+
+% errors = MOLTIPLICARE PER 5 I CENTRI
+errors = centers * 5;
+
 end
 
 
