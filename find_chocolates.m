@@ -5,10 +5,19 @@
 
 function [centers, radius] = find_chocolates(image, mask)
     shape = shape_classifier(image, mask, 0);
+    
+    props = regionprops(mask, ...
+        'MajorAxisLength', ...
+        'MinorAxisLength', ...
+        'Eccentricity', ...
+        'Centroid', ...
+        'Orientation', ...
+        'BoundingBox');
+    
     if shape{1} == '2'
-        [centers, radii] = handle_square_boxes();
+        [centers, radii] = handle_square_boxes(image, mask, props, 1.5);
     else
-        [centers, radii] = handle_rectangle_boxes(image, mask);
+        [centers, radii] = handle_rectangle_boxes(image, mask, props, 0.75);
     end
     
     m = mean(radii);
@@ -24,7 +33,7 @@ end
 
 % fuzione che gestisce i cerchi delle scatole rettangolari
 
-function [centers, radii] = handle_rectangle_boxes(image, mask)
+function [centers, radii] = handle_rectangle_boxes(image, mask, props, alfa)
 
     % oggetti più piccoli o più grandi di [rmin, rmax]
     % non verrebbero trovati ma contando poi i cioccolatini si vedrebbe
@@ -33,21 +42,8 @@ function [centers, radii] = handle_rectangle_boxes(image, mask)
     % sarà escluso dal classificatore
     % migliorare stime [rmin, rmax]
     
-    props = regionprops(mask, ...
-        'MajorAxisLength', ...
-        'MinorAxisLength', ...
-        'Eccentricity', ...
-        'Centroid', ...
-        'Orientation', ...
-        'BoundingBox');
-    alfa = 0.75;
     rmax = fix(props.MinorAxisLength / (8 - alfa));
     rmin = fix(rmax / 3);
-    
-    
-    % (soltanto per test)
-    % showellipse(image, props);
-    
     
     % aumento il contrasto per trovare meglio i cerchi
     % perchè i cioccolatini cosi risultano
@@ -57,8 +53,6 @@ function [centers, radii] = handle_rectangle_boxes(image, mask)
     % influenzano notevolmente il risultato
     % equalizzo per confontare meglio immagini con
     % condizioni di luci diverse
-    
- 
     
     hsv = rgb2hsv(image);
     Sat = hsv(:,:,2);
@@ -71,21 +65,59 @@ function [centers, radii] = handle_rectangle_boxes(image, mask)
     % pe le motivazioni sopra dette scelgo una
     % object polarity "dark"
     
-    [centers, radii, metric] = imfindcircles(imDark, [rmin rmax], ...
+    [centers, radii, metrics] = imfindcircles(imDark, [rmin rmax], ...
         'Method', 'TwoStage', ...
         'Sensitivity', 0.9, ...
         'EdgeThreshold', 0.1, ...
         'ObjectPolarity', 'dark');
     
+    [centers, radii] = circlefilter(centers, radii, metrics, image, rmin, rmax);
+end
+
+
+% fuzione che gestisce i cerchi delle scatole quadrate
+
+function [centers, radii] = handle_square_boxes(image, mask, props, alfa)
+    rmax = 45;%fix(props.MinorAxisLength / (6 + alfa));%45
+    rmin = 15;%fix(rmax / 3);%15
+    
+    ycbcr = rgb2ycbcr(image);
+    Cb = ycbcr(:,:,2);
+    imDark = (~mask) + Cb;
+    imDark = adapthisteq(imDark);
+    
+    [centers, radii, metrics] = imfindcircles(imDark, [rmin rmax], ...
+        'Method', 'TwoStage', ...
+        'Sensitivity', 0.85, ...
+        'EdgeThreshold', 0.1, ...
+        'ObjectPolarity', 'dark');
+    
+    [centers, radii] = circlefilter(centers, radii, metrics, image, rmin, rmax); 
+end
+
+
+
+% ------------------------------------------------------------------------
+
+
+
+% ritorna i centri e raggi dei cerchi
+% che sono i presunti cioccolatini
+% rimuove i cerchi esterni alla scatola
+% rimuove i cerchi con certa metrica < 0.1
+% rimuove i cerchi overlappati
+
+function [centers, radii] = circlefilter(centers, radii, metrics, image, rmin, rmax)
     
     % tutti i cerchi (x,y) che non rispettano una certa metrica li tolgo
      
-    centers = centers(metric > 0.1, :);
-    radii = radii(metric > 0.1);
+    centers = centers(metrics > 0.1, :);
+    radii = radii(metrics > 0.1);
     
     
     % erodo un pò di scatola
     
+    hsv = rgb2hsv(image);
     I = hsv(:,:,2) > 0.5;
     I = imclose(I, strel('disk', rmax));
     I = imerode(I, strel('disk', fix(rmin/4)));
@@ -114,17 +146,6 @@ function [centers, radii] = handle_rectangle_boxes(image, mask)
     % tolgo gli overlap
     
     [centers, radii] = rmoverlap(centers, radii, 1);
-    
-    % (soltanto per test)
-    showcircles(imDark, centers, radii, 0);
-end
-
-
-% fuzione che gestisce i cerchi delle scatole quadrate
-
-function [centers, radii] = handle_square_boxes()
-    centers = [];
-    radii = [];
 end
 
 
@@ -184,77 +205,4 @@ function [centers, radii] = rmoverlap(centers, radii, beta)
         end
     end
 end
-
-
-
-% ------------------------------------------------------------------------
-
-
-% mostro i cerchi trovati
-% prendendo in input immagine sulla quale visualizzarli
-% i centri e raggi
-% indice i (soltanto a scopo di test) per salvare l'immagine
-
-function showcircles(image, centers, radii, i)
-    m = mean(radii);
-    h = figure;
-    imshow(image); title("Dark");
-    hold on;
-    viscircles(centers, ...
-        m * ones(length(radii), 1), ...
-        'EdgeColor', 'b', ...
-        'LineWidth', 3); axis image;
-    if i ~= 0
-        saveas(h, "./Test/Dark/" + i + ".jpg");
-        close(h);
-    end
-end
-
-
-% mostra ellisse bounding box
-% passandogli il vettore s calcolabile con regionprops(...)
-% - bounding box
-% - eccentricity, orientation, centroid
-% - majoraxis, minoraxis
-
-function showellipse(image, s)
-    
-    imshow(image);
-    
-    hold on;
-    
-
-    rectangle('Position', s.BoundingBox, 'EdgeColor', 'r');
-
-    phi = linspace(0,2*pi,50);
-    cosphi = cos(phi);
-    sinphi = sin(phi);
-
-    for k = 1:length(s)
-        xbar = s(k).Centroid(1);
-        ybar = s(k).Centroid(2);
-
-        a = s(k).MajorAxisLength/2;
-        b = s(k).MinorAxisLength/2;
-
-        theta = pi*s(k).Orientation/180;
-        R = [ cos(theta)   sin(theta)
-             -sin(theta)   cos(theta)];
-
-        xy = [a*cosphi; b*sinphi];
-        xy = R*xy;
-
-        x = xy(1,:) + xbar;
-        y = xy(2,:) + ybar;
-
-        plot(x,y,'r','LineWidth',2);
-    end
-    
-    hold off
-
-end
-
-
-
-
 
