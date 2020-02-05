@@ -17,15 +17,15 @@ shape = classification.getshape(box, mask);
 
 % Look for errors
 if shape == "rectangle"
-    grid = creategrid(centers);
-    errors = checkerrors(grid, radii);
+    %grid = creategrid(centers);
+    %errors = checkerrors(grid, radii);
 else
-    errors = checkerrors(centers, radii);
+    %errors = checkerrors(centers, radii);
 end
 
-iscompliant = isempty(errors);
+%iscompliant = isempty(errors);
 
 % Show results
-showresults(im, errors);
+%showresults(im, errors);
 
 end

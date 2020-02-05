@@ -67,8 +67,8 @@ end
 % find groups of lines
 Y = pdist(X);
 Z = linkage(Y);
-T = cluster(Z, 'MaxClust', 7);
-figure; gscatter(centers(:, 1), centers(:, 2), T), axis image;
+T = cluster(Z, 'MaxClust', 6);
+%figure; gscatter(centers(:, 1), centers(:, 2), T), axis image;
 
 q = maxPair.points(1, 2) - maxAngle * maxPair.points(1, 1);
 
