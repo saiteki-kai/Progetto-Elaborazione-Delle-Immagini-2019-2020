@@ -36,8 +36,8 @@ DA IMPLEMENTARE:
 - generare dati dai cerchi trovati e etichettarli
 - migliorare i classificatori
 
-- migliorare la scelta del range di [rmin, rmax]
-- fixare overlap(apparte caso particolare immagine 10-11-36)
+- migliorare la scelta del range di [rmin, rmax] (dovrebbe essere apposto)
+- fixare overlap (dovrebbe essere apposto)
 - migliorare radius alla fine della find_cioccolatini
 - valutare se è meglio lasciare lo sfondo nero o bianco per trovare i cerchi (il nero era meglio)
 
@@ -46,8 +46,8 @@ DA IMPLEMENTARE:
     - check errori
 
 - per scatole quadrate:
-    - ringrandire i cerchi
-    - check errori (come trovo gli errori problemi dovuti classe di rigetto)
+    - ringrandire i cerchi(quando vedo se c'è il bollino)
+    - check errori (come dico dove è l'errore? problemi dovuti classe di rigetto)
 
 - dire se è conforme o no
 

@@ -7,55 +7,16 @@ function [centers, radius] = findchocolates(im, mask, shape)
 
 props = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength');
 
-hsv = rgb2hsv(im);
-s = hsv(:,:,2);
-s = (~mask) + s;
-s = adapthisteq(s);
 
-centersCb = [];
-radiiCb = [];
-
-if shape{1} == "rectangle"  % "1"
-    rmax = fix(props.MinorAxisLength / (8 - 0.75));
-    rmin = fix(rmax / 3);
-    range = [rmin, rmax];
+if shape{1} == '1'
+   [centers, radii] = handleRectangleBoxes(im, mask, props, 0.75);
 else
-    rmax = 45; %45
-    rmin = 15; %15
-    range = [rmin, rmax];
-    
-    ycbcr = rgb2ycbcr(im);
-    Cb = ycbcr(:,:,2);
-    Cb = (~mask) + Cb;
-    Cb = adapthisteq(Cb);
-    
-    [centersCb, radiiCb, metrics] = imfindcircles(Cb, range, ...
-        'Method', 'TwoStage', ...
-        'Sensitivity', 0.85, ...
-        'EdgeThreshold', 0.1, ...
-        'ObjectPolarity', 'dark');
-
-    [centersCb, radiiCb] = circleFilter(im, centersCb, radiiCb, metrics, range);
+   [centers, radii] = handleSquareBoxes(im, mask, props, 0.35);
 end
-
-[centersS, radiiS, metrics] = imfindcircles(s, range, ...
-        'Method', 'TwoStage', ...
-        'Sensitivity', 0.9, ...
-        'EdgeThreshold', 0.1, ...
-        'ObjectPolarity', 'dark');
-
-[centersS, radiiS] = circleFilter(im, centersS, radiiS, metrics, range);
-
-centers = [centersS; centersCb];
-radii = [radiiS; radiiCb];
-
-[centers, radii] = removeOverlap(centers, radii, range(1), 1);
 
 m = mean(radii);
 d = std(radii);
 radius = m - 2 * d;
-
-utils.showcircles(im, centers, radius, 0);
 end
 
 function [centers, radii] = handleRectangleBoxes(image, mask, props, alfa)
@@ -96,12 +57,14 @@ s = adapthisteq(s);
     'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'dark');
 
-[centers, radii] = circleFilter(centers, radii, metrics, image, rmin, rmax);
+[centers, radii] = circleFilter(image, centers, radii, metrics, [rmin, rmax]);
 end
 
-function [centers, radii] = handleSquareBoxes(image, mask)
-rmax = 45;%45
-rmin = 15;%15
+function [centers, radii] = handleSquareBoxes(image, mask, props, alfa)
+% rmax = 45;
+% rmin = 15;
+rmax = fix(props.MinorAxisLength / (8 - alfa));
+rmin = fix(rmax / 3);
 
 ycbcr = rgb2ycbcr(image);
 Cb = ycbcr(:,:,2);
@@ -114,7 +77,7 @@ Cb = adapthisteq(Cb);
     'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'dark');
 
-[centers1, radii1] = circleFilter(centers, radii, metrics, image, [rmin, rmax]); 
+[centers1, radii1] = circleFilter(image, centers, radii, metrics, [rmin, rmax]); 
 
 hsv = rgb2hsv(image);
 s = hsv(:,:,2);
@@ -127,12 +90,13 @@ s = adapthisteq(s);
     'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'dark');
 
-[centers2, radii2] = circleFilter(centers, radii, metrics, image, [rmin, rmax]);
+[centers2, radii2] = circleFilter(image, centers, radii, metrics, [rmin, rmax]);
 
 centers = [centers1; centers2];
 radii = [radii1; radii2];
 
-[centers, radii] = removeOverlap(centers, radii, 1);
+[centers, radii] = removeOverlap(centers, radii, [rmin, rmax], 1);
+radii = radii + 5;
 end
 
 function [centers, radii] = circleFilter(im, centers, radii, metrics, range)
@@ -143,8 +107,8 @@ function [centers, radii] = circleFilter(im, centers, radii, metrics, range)
 % rimuove i cerchi con certa metrica < 0.1
 % rimuove i cerchi overlappati
 
-centers = centers(metrics > 0.1, :);
-radii = radii(metrics > 0.1);
+centers = centers(metrics > 0.2, :); %0.1
+radii = radii(metrics > 0.2); %0.1
 
 % erodo un pò di scatola
 hsv = rgb2hsv(im);
@@ -169,7 +133,7 @@ d = std(radii);
 radii = m * ones(length(radii), 1); % - 2 * d;
 
 % tolgo gli overlap
-[centers, radii] = removeOverlap(centers, radii, range(1), 1);
+[centers, radii] = removeOverlap(centers, radii, [range(1), range(2)], 1);
 end
 
 function [centers, radii] = removeExternals(im, mask, centers, radii, r)
@@ -195,11 +159,12 @@ centers = centers(v, :);
 radii = radii(v);
 end
 
-function [centers, radii] = removeOverlap(centers, radii, rmin, beta)
+function [centers, radii] = removeOverlap(centers, radii, range, beta)
 %REMOVEOVERLAP
 % dati i centri e i raggi e un beta
 % perogni cerchio (x1, y1) e raggio r1
-% trovo il cerchio più vicino (x2, y2) e raggio r2
+% trovo i cerchi più vicini (x2, y2) ... (xn, yn) con raggio r2 ... rn
+% distanza < 30 da (x1, y1)
 % tale che d(r1, r2) < beta * (r1 + r2) 
 % sostituisco i cerchi con (xm, ym) baricentro tra i centri
 % e raggio medio rm tra i raggi dei due cerchi
@@ -212,21 +177,21 @@ for k = 1 : length(centers)
     other_radii = radii([1:k-1, k+1:length(centers)])';
     distances = vecnorm((other_centers - centers(k, :))');
     
-    minDist = rmin * 2;
+    minDist = 30;%range(2) - range(1);
     indexes = distances < minDist;
     %disp("k:" + k + ", dists: " + distances(indexes));
     %disp(indexes);
-    
+     
 %     viscircles(centers, radii, 'EdgeColor', 'b', 'LineWidth', 3); axis image;
 %     viscircles(centers(k,:), radii(k), 'EdgeColor', 'm', 'LineWidth', 3);
 %     viscircles(other_centers(indexes,:), other_radii(indexes), 'EdgeColor', 'y', 'LineWidth', 3); axis image;
-    
+
     found = false;
     for w=1:length(indexes)
         if indexes(w) == 0, continue, end
         
-        % viscircles(other_centers(w,:), other_radii(w) ./ 3, 'EdgeColor', 'g', 'LineWidth', 3); axis image;
-        %pause(1);
+%         viscircles(other_centers(w,:), other_radii(w) ./ 3, 'EdgeColor', 'g', 'LineWidth', 3); axis image;
+%         pause(1);
                 
         b = distances(w) < radii(k) + other_radii(w);
         %disp(distances(w) + " < " + (radii(k) + other_radii(w)) + " = " + b);
@@ -247,9 +212,8 @@ for k = 1 : length(centers)
         new_radii = [new_radii; radii(k)];
     end
     
-    %viscircles(new_centers, new_radii, 'EdgeColor', 'r', 'LineWidth', 3); axis image;
-    
-    %pause(1);
+%     viscircles(new_centers, new_radii, 'EdgeColor', 'r', 'LineWidth', 3); axis image;
+%     pause(1);
 end
     centers = new_centers;
     radii = new_radii;  

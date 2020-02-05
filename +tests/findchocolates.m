@@ -10,8 +10,6 @@ for i = 1:numel(images)
     
     shape = classification.shape_classifier(box, mask, 0);
     
-    if shape{1} == '2'
-        [centers, radius] = findchocolates(box, mask, shape);
-        utils.showcircles(box, centers, radius, i);
-    end
+    [centers, radius] = findchocolates(box, mask, shape);
+    utils.showcircles(box, centers, radius, i);
 end

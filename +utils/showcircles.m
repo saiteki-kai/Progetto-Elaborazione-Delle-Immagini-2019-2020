@@ -12,7 +12,7 @@ function showcircles(image, centers, radius, i)
         'EdgeColor', 'b', ...
         'LineWidth', 3); axis image;
     if i ~= 0
-        saveas(h, "./Test2/" + i + ".jpg");
+        saveas(h, "./Test2/background(White)/" + i + ".jpg");
         close(h);
     end
 end
