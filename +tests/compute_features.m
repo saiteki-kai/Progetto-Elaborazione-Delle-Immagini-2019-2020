@@ -7,6 +7,7 @@ output = ["mat/rocher-", "mat/noir-", "mat/rejection-", "mat/raffaello-"];
 
 % vedi se usare un solo mat file o più per ogni classe... ⤴⤴⤴⤴
     
+p = [];
 for f=1:4  % 1:2:4 per confrontare rocher e rigetto
     images = utils.getfiles("Data/TrainingSet/" + folders(f));
     images = images(1:110);
@@ -35,10 +36,16 @@ for f=1:4  % 1:2:4 per confrontare rocher e rigetto
     
     %F = [nhist, ncedd];
     
-    legend('-DynamicLegend');
-    hold on;
-    
-    plot(ncedd, 'DisplayName', output(f) + "cedd");
+    %legend('-DynamicLegend');
+    %hold on;
+    %plot(ncedd, 'DisplayName', output(f) + "cedd");
     %plot(nhist , 'DisplayName', folders(f) + 'hist');
     
+    p = [p, ncedd];
 end
+
+% Confronti
+figure; scatter(p(:,1), p(:,2)); xlabel('rocher'); ylabel('noir');
+figure; scatter(p(:,1), p(:,3)); xlabel('rocher'); ylabel('rigetto');
+figure; scatter(p(:,1), p(:,4)); xlabel('rocher'); ylabel('raffaello');
+
