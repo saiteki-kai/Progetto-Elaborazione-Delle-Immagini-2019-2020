@@ -46,16 +46,15 @@ if ~exist("features.mat", 'file')
     rgb_hist = normalize2(rgb_hist);
     
     save("features.mat", "cedd", "ghist", ...
-         "glcm", "lbp", "stdev", "avg_col", "rgb_hist");
+         "glcm", "lbp", "stdev", "avg_col", "rgb_hist", "hom");
 end
 
 load("features.mat");
 
-T = table(labels, cedd, avg_col, ghist, glcm, lbp, rgb_hist, stdev);
+T = table(labels, cedd, avg_col, ghist, glcm, lbp, rgb_hist, stdev, hom);
 
 D = table2dataset(T);
 C = dataset2table(D([1:5, 111:115, 221:225], :)); % sample of the three classes
-
 
 function out = normalize1(in)
     out = (in - mean(in)) ./ std(in);
