@@ -15,6 +15,7 @@ if ~exist("features.mat", 'file')
     cedd = zeros(nImages, 1);
     ghist = zeros(nImages, 1);
     glcm = zeros(nImages, 1);
+    qhist = zeros(nImages, 1);
     hom = zeros(nImages, 1);
     lbp = zeros(nImages, 1);
     stdev = zeros(nImages, 1);
@@ -27,6 +28,7 @@ if ~exist("features.mat", 'file')
         
         cedd(i,:) = norm(utils.compute_CEDD(im));
         ghist(i) = norm(utils.compute_ghist(im));
+        qhist(i) = norm(utils.compute_qhist(im));
         glcm(i) = norm(utils.compute_glcm(rgb2gray(im)));
         hom(i) = norm(utils.compute_glcm(rgb2gray(im)));
         lbp(i,:) = norm(utils.compute_lbp(rgb2gray(im)));
@@ -37,6 +39,7 @@ if ~exist("features.mat", 'file')
 
     % Normalization
     ghist = normalize2(ghist);
+    qhist = normalize2(qhist);
     cedd = normalize2(cedd);
     glcm = normalize2(glcm);
     hom = normalize2(hom);
@@ -51,7 +54,7 @@ end
 
 load("features.mat");
 
-T = table(labels, cedd, avg_col, ghist, glcm, lbp, rgb_hist, stdev, hom);
+T = table(labels, cedd, avg_col, ghist, qhist, glcm, lbp, rgb_hist, stdev, hom);
 
 D = table2dataset(T);
 C = dataset2table(D([1:5, 111:115, 221:225], :)); % sample of the three classes
