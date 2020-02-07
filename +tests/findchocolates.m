@@ -11,5 +11,11 @@ for i = 1:numel(images)
     shape = classification.shape_classifier(box, mask, 0);
     
     [centers, radius] = findchocolates(box, mask, shape);
-    utils.showcircles(box, centers, radius, i);
+    % utils.showcircles(box, centers, radius, i);
+    
+    if shape{1} == '1'
+        utils.generatedata(box, centers, radius, 'training set/rettangoli/', i);
+    else
+        utils.generatedata(box, centers, radius, 'training set/quadrate/', i);
+    end
 end

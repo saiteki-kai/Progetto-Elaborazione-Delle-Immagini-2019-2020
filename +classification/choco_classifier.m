@@ -21,22 +21,16 @@ end
 
 function show_results(image, test_predicted)
     label = "";
-    
+
     if test_predicted{1} == '1'
+        label = "Raffaello";
+    elseif test_predicted{1} == '2'
         label = "Ferrero Rocher";
+    elseif test_predicted{1} == '3'
+        label = "Ferrero Noir";
     else
         label = "Rigetto";
     end
-    
-%     if test_predicted{1} == '1'
-%         label = "Raffaello";
-%     elseif test_predicted{1} == '2'
-%         label = "Ferrero Rocher";
-%     elseif test_predicted{1} == '3'
-%         label = "Ferrero Noir";
-%     else
-%         label = "Rigetto";
-%     end
         
     figure(), imshow(image), title(label);
 end
@@ -46,6 +40,7 @@ function out = compute_descriptors(image)
 %      image = rgb2gray(image);
 %      out = compute_lbp(image);
 end
+
 function out = readfile(path)
   f=fopen(path);
   l = textscan(f,'%s');
