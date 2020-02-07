@@ -3,7 +3,6 @@ function out = choco_classifier(image, show)
     predictChoco(image, show);
 end
 
-
 function init()
     create_descriptor_files();
     load('features.mat', 'features');
