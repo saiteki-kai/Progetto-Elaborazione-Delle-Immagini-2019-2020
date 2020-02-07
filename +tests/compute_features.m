@@ -54,7 +54,7 @@ load("features.mat");
 T = table(labels, cedd, avg_col, ghist, glcm, lbp, rgb_hist, stdev);
 
 D = table2dataset(T);
-C = cell2table(D([1:5, 111:115, 221:225], :)); % sample of the three classes
+C = dataset2table(D([1:5, 111:115, 221:225], :)); % sample of the three classes
 
 
 function out = normalize1(in)
