@@ -1,23 +1,29 @@
 function out = choco_classifier(image, show)
+    init();
+    predictChoco(image, show);
+end
+
+
+function init()
     create_descriptor_files();
     load('features.mat', 'features');
-    [images, labels]= readlists();
-    %labels = readfile("B/labels.list");
+    labels = utils.readfile("Data/TrainingSet.labels");
     cv = cvpartition(labels,'Holdout',0.2);
     c = init_classifier(features, labels, cv);
     [tr, ts] = test_classifier(features, labels, cv, c);
     save('classifier.mat', 'c', 'tr', 'ts');
+end
 
+function predicted = predictChoco(image, show)
     load('classifier.mat', 'c');
     
     test_values = compute_descriptors(image);
-    out = predict(c, test_values);
+    predicted = predict(c, test_values);
     
     if show == 1
-        show_results(image, out);
+        show_results(image, predicted);
     end
 end
-
 
 function show_results(image, test_predicted)
     label = "";
@@ -36,33 +42,16 @@ function show_results(image, test_predicted)
 end
 
 function out = compute_descriptors(image)
-     out = compute_CEDD(image);
-%      image = rgb2gray(image);
-%      out = compute_lbp(image);
+     out = utils.compute_CEDD(image);
 end
 
-function out = readfile(path)
-  f=fopen(path);
-  l = textscan(f,'%s');
-  out = l{:};
-  fclose(f);
-end
-
-function create_descriptor_files()
-%   [images, labels] = readlists();
-%   
-%   nimages = numel(images);
-  
-  images = get_files("B/");
-  labels = readfile("B/labels.list");
+function create_descriptor_files()  
+  images = utils.getfiles("Data/TrainingSet");
   features = [];
-  
-  for n = 1 : numel(images)-1 %nimages
-    %im = imread(['Cioccolatini/' images{n}]);
+  for n = 1 : numel(images)
     im = imread([images{n}]);
     features = [features; compute_descriptors(im)];
   end
-  
   save('features.mat', 'features');
 end
 
@@ -81,20 +70,9 @@ function [train_perf, test_perf] = test_classifier(descriptor, labels, cv, class
     test_labels  = labels(cv.test);
 
     train_predicted = predict(classifier, train_values);
-    train_perf = confmat(train_labels, train_predicted);
+    train_perf = classification.confmat(train_labels, train_predicted);
 
+    
     test_predicted = predict(classifier, test_values);
-    test_perf = confmat(test_labels, test_predicted);
-end
-
-function [images,labels]=readlists()
-  f=fopen('Cioccolatini/images.list');
-  z = textscan(f,'%s');
-  fclose(f);
-  images = z{:};
-
-  f=fopen('Cioccolatini/labels.list');
-  l = textscan(f,'%s');
-  labels = l{:};
-  fclose(f);
+    test_perf = classification.confmat(test_labels, test_predicted);
 end
