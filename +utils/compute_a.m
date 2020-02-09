@@ -1,6 +1,6 @@
 function out = compute_a(image, k)
     [r,c,ch] = size(image);
-    im = reshape(image,r*c,ch);
+    im = im2double(reshape(image,r*c,ch));
     if k == 1
         out = 1-(1/(1-var(im)));
     elseif k == 2

@@ -1,15 +1,17 @@
 function out = choco_classifier(image, show)
-    init();
-    predictChoco(image, show);
+    %init();
+    out = predictChoco(image, show);
 end
 
 function init()
     create_descriptor_files();
     load('features.mat', 'features');
-    labels = utils.readfile("Data/TrainingSet.labels");
+   [~, labels] = utils.readlabels("Data/TrainingSet.csv", "Data/TrainingSet/");
     cv = cvpartition(labels,'Holdout',0.2);
     c = init_classifier(features, labels, cv);
     [tr, ts] = test_classifier(features, labels, cv, c);
+    disp(tr);
+    disp(ts);
     save('classifier.mat', 'c', 'tr', 'ts');
 end
 
@@ -17,38 +19,28 @@ function predicted = predictChoco(image, show)
     load('classifier.mat', 'c');
     
     test_values = compute_descriptors(image);
-    predicted = predict(c, test_values);
+    [predicted, score] = predict(c, test_values);
     
     if show == 1
+%         disp(score);
+%         disp(predicted);
         show_results(image, predicted);
     end
 end
 
 function show_results(image, test_predicted)
-    label = "";
-
-    if test_predicted{1} == '1'
-        label = "Raffaello";
-    elseif test_predicted{1} == '2'
-        label = "Ferrero Rocher";
-    elseif test_predicted{1} == '3'
-        label = "Ferrero Noir";
-    else
-        label = "Rigetto";
-    end
-        
-    figure(), imshow(image), title(label);
+    imshow(image), title(test_predicted{1});
 end
 
 function out = compute_descriptors(image)
      out = utils.compute_CEDD(image);
 end
 
-function create_descriptor_files()  
-  images = utils.getfiles("Data/TrainingSet");
+function create_descriptor_files()
+  [images, ~] = utils.readlabels("Data/TrainingSet.csv", "Data/TrainingSet/");
   features = [];
   for n = 1 : numel(images)
-    im = imread([images{n}]);
+    im = imread(images{n});
     features = [features; compute_descriptors(im)];
   end
   save('features.mat', 'features');

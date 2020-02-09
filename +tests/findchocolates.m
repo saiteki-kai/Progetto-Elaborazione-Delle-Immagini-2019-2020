@@ -13,9 +13,5 @@ for i = 1:numel(images)
     [centers, radius] = findchocolates(box, mask, shape);
     % utils.showcircles(box, centers, radius, i);
     
-    if shape{1} == '1'
-        utils.generatedata(box, centers, radius, 'training set/rettangoli/', i);
-    else
-        utils.generatedata(box, centers, radius, 'training set/quadrate/', i);
-    end
+    utils.generatedata(im, centers*5, radius*5, 'TrainingSet/', i);
 end

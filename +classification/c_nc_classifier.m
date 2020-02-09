@@ -66,7 +66,7 @@ function show_results(image, test_predicted)
 end
 
 function out = compute_descriptors(image)
-     out = compute_CEDD(image);
+     out = utils.compute_CEDD(image);
 %      image = rgb2gray(image);
 %      out = compute_lbp(image);
 end

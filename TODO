@@ -17,9 +17,11 @@
          % conto cioccolatini
          % conto bollini
     % se la scatola e quadrata
-        % classifico i cioccolatini come (1,2) classi:
-            % - 1 dorati
-            % - 2 rigetto
+        % classifico i cioccolatini come (1,2,3,4) classi:
+            % - 1 bianchi
+            % - 2 dorati
+            % - 3 neri
+            % - 4 rigetto
         % conto cioccolatini
         % conto bollini
     % ritorno un valore logico 0-1
