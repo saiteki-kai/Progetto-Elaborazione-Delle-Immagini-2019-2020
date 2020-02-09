@@ -10,6 +10,14 @@
 %     per essere conforme abbia sempre
 %     un numero di ferrero rocher pari a 24
 %     con 24 bollini sopra ogiuno di essi
+
+% assumo che mi arrivi sempre un ferrero rocher e non qualcos altro
+% assumo la regione più grande sia sempre il bollino
+% erodo non più della metà del "raggio" dell'area del bollino
+% cosi tutto ciò che è più piccolo sparirà mentre rimarrà il bollino
+% se trovo più di una regione errore.
+% problema l'illuminazione se non ho davvero un bollino
+% l'illuminazione potrebbe farmi credere di averlo trovato comunque
 function errors = checkerrors(im, centers, radius)
 %CHECK_ERRORS ...
 
@@ -38,18 +46,17 @@ end
 
 
 function errors = checksquared(im, centers, radius)
-    n_labels = 0;
-    n_ferrero_rochers = 0;
+    nstickers = 0;
+    nferrerorochers = 0;
     errors = [];
-    
     for i = 1 : length(centers)
         choco = utils.cropcircle(im, centers(i, 1), centers(i, 2), radius);
         choco_type = classification.choco_classifier(choco, 0);
         if choco_type{1} == "ferrero_rocher"
-            n_ferrero_rochers = n_ferrero_rochers + 1;
-            existlabel = find_label(choco);
-            if existlabel == 1
-                n_labels = n_labels + existlabel;
+            nferrerorochers = nferrerorochers + 1;
+            X = existsticker(choco);
+            if X == 1
+                nstickers = nstickers + X;
             else
                 curr = [centers(i, 1), centers(i, 2)];
                 errors = [errors; curr];
@@ -68,8 +75,7 @@ function errors = checkrectangle(im, centers, radius)
     for i = 1 : n
         for j = 1 : m
             choco = utils.cropcircle(im, centers(i, j, 1), centers(i, j, 2), radius);
-            choco_type = classification.choco_classifier(choco, 0);
-            grid(i, j) = encodetype(choco_type);
+            grid(i, j) = encodetype(choco);
         end
     end
     
@@ -107,10 +113,14 @@ function errors = checkrectangle(im, centers, radius)
     end
 end
 
-function out = encodetype(chocotype)
-   % disp(chocotype);
+function out = encodetype(choco)
+    chocotype = classification.choco_classifier(choco, 0);
     if chocotype{1} == "ferrero_rocher"
-        out = 1;
+        if existsticker(choco) == 1
+            out = 1;
+        else
+            out = 4;
+        end
     elseif chocotype{1} == "ferrero_noir"
         out = 2;
     elseif chocotype{1} == "raffaello"
@@ -121,36 +131,65 @@ function out = encodetype(chocotype)
 end
 
 
-% assumo che mi arrivi sempre un ferrero rocher e non qualcos altro
-% assumo la regione più grande sia sempre il bollino
-% erodo non più della metà del "raggio" dell'area del bollino
-% cosi tutto ciò che è più piccolo sparirà mentre rimarrà il bollino
-% se trovo più di una regione errore.
-% problema l'illuminazione se non ho davvero un bollino
-% l'illuminazione potrebbe farmi credere di averlo trovato comunque
-function out = find_label(image)
 
-%     imDark = imadjust(saturation, [], [], 5);
-%     imBright = gray;
-%     imshow(imDark < 0.01);
+function out = existsticker(image)
+    hsv1 = rgb2hsv(image);
+    hsv1 = histeq(hsv1);
+    I = hsv1(:,:,2);
+    I = imfilter(I, fspecial('average', [31 31]));
+    hsv2 = rgb2hsv((im2double(imread('template1.jpg'))));
+    hsv2 = histeq(hsv2);
+    T = hsv2(:,:,2);
+    T = imfilter(T, fspecial('average', [5 5]));
     
-    out = 0;
-    image = imadjustn(image, [], [], 0.8);
+    %T = imrotate(T, 90);
+    avg = mean(T(:));
+    T = T - avg;
+    I = I - avg;
+    out = imfilter(I, T);
     
-    hsv = rgb2hsv(image);
-    I = hsv(:,:,2);
+%     imshow(I);
+%     pause(1);
+%     imagesc(out);
+%     pause(1);
     
-    I = I < 0.3;
-    I = imfill(I, 'holes');
-    I = imerode(I, strel('disk', 19));
-    bw = bwareafilt(I, 1);
-    bw = imdilate(bw, strel('disk', 15));
+    [~, n] = bwlabel(out > 60);
     
-    imshow(bw .* im2double(image));
-    pause(1);
-    
-    [~, n] = bwlabel(I);
-    if n == 1
+    if n >= 1
         out = 1;
+    else
+        out = 0;
     end
 end
+
+
+
+
+
+
+% function out = find_label(image)
+% 
+% %     imDark = imadjust(saturation, [], [], 5);
+% %     imBright = gray;
+% %     imshow(imDark < 0.01);
+%     
+%     out = 0;
+%     image = imadjustn(image, [], [], 0.8);
+%     
+%     hsv = rgb2hsv(image);
+%     I = hsv(:,:,2);
+%     
+%     I = I < 0.3;
+%     I = imfill(I, 'holes');
+%     I = imerode(I, strel('disk', 19));
+%     bw = bwareafilt(I, 1);
+%     bw = imdilate(bw, strel('disk', 15));
+%     
+% %     imshow(bw .* im2double(image));
+% %     pause(1);
+%     
+%     [~, n] = bwlabel(I);
+%     if n == 1
+%         out = 1;
+%     end
+% end
