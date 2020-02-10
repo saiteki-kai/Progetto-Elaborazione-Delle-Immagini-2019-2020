@@ -1,5 +1,6 @@
 function out = compute_homogenity(image)
      glcm = graycomatrix(image);
-     out = graycoprops(glcm, "homogeneity");
+     stats = graycoprops(glcm, "homogeneity");
+     out = stats.Homogeneity;
 end
 
