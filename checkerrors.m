@@ -131,65 +131,49 @@ function out = encodetype(choco)
 end
 
 
-
-function out = existsticker(image)
-    hsv1 = rgb2hsv(image);
-    hsv1 = histeq(hsv1);
-    I = hsv1(:,:,2);
-    I = imfilter(I, fspecial('average', [31 31]));
-    hsv2 = rgb2hsv((im2double(imread('template1.jpg'))));
-    hsv2 = histeq(hsv2);
-    T = hsv2(:,:,2);
-    T = imfilter(T, fspecial('average', [5 5]));
-    
-    %T = imrotate(T, 90);
-    avg = mean(T(:));
-    T = T - avg;
-    I = I - avg;
-    out = imfilter(I, T);
-    
-%     imshow(I);
-%     pause(1);
-%     imagesc(out);
-%     pause(1);
-    
-    [~, n] = bwlabel(out > 60);
-    
-    if n >= 1
-        out = 1;
-    else
-        out = 0;
-    end
-end
-
-
-
-
-
-
-% function out = find_label(image)
+% function out = existsticker(image)
 % 
 % %     imDark = imadjust(saturation, [], [], 5);
 % %     imBright = gray;
 % %     imshow(imDark < 0.01);
+% %     image = imadjustn(image, [], [], 0.8);
 %     
-%     out = 0;
-%     image = imadjustn(image, [], [], 0.8);
-%     
+%     image = imadjustn(image, [], [], 1.7);
 %     hsv = rgb2hsv(image);
-%     I = hsv(:,:,2);
+%     lab = rgb2lab(image);
+%     mask = rgb2gray(image) == 0;
+%     I1 = (hsv(:,:,2) < 0.4);
+%     I2 = lab(:,:,3) > 30;
+%     imshow(I2);
+%     pause(5);
+%     I2 = imdilate(I2, strel('disk', 15));
+%     I = I1 .* ~I2;
+%     I = I .* ~mask;
 %     
-%     I = I < 0.3;
 %     I = imfill(I, 'holes');
-%     I = imerode(I, strel('disk', 19));
-%     bw = bwareafilt(I, 1);
-%     bw = imdilate(bw, strel('disk', 15));
+%     I = imerode(I, strel('disk', 5));
+%     I = bwareafilt(I > 0.5, 1);
+%     I = imdilate(I, strel('disk', 15));
 %     
+%     imshow(im2double(image));
+%     pause(1);
+%     imshow(I .* im2double(image));
+%     pause(1);
+%     
+% %     I = I < 0.3;
+% %     I = imfill(I, 'holes');
+% %     I = imerode(I, strel('disk', 19));
+% %     bw = bwareafilt(I, 1);
+% %     bw = imdilate(bw, strel('disk', 15));
+% %     imshow(image);
+% %     pause(1);
 % %     imshow(bw .* im2double(image));
 % %     pause(1);
 %     
 %     [~, n] = bwlabel(I);
 %     if n == 1
 %         out = 1;
+%     else
+%         out = 0;
 %     end
 % end

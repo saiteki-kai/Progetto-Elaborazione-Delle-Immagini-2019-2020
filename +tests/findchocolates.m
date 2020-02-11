@@ -12,6 +12,6 @@ for i = 1:numel(images)
     
     [centers, radius] = findchocolates(box, mask, shape);
     % utils.showcircles(box, centers, radius, i);
-    
-    utils.generatedata(im, centers*5, radius*5, 'TrainingSet/', i);
+    disp(radius);
+    utils.generatedata(im, centers*5, radius*5, '', i);
 end
