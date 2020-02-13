@@ -3,20 +3,21 @@ function iscompliant = main(im)
 
 % Downscale the image
 resized = imresize(im, 1/5);
-%resized = im2double(resized);
 
 % Find the box
 mask = findbox(resized);
 box = im2double(resized) .* mask;
 
 % Check the shape
-shape = classification.shape_classifier(box, mask, 0);
+shape = classification.getshape(mask);
 
 % Find the chocolates
-[centers, radii] = findchocolates(box, mask, shape);  
+[centers, radii] = findchocolates(box, mask, shape); 
+
+%disp(shape);
 
 % Look for errors
-if shape{1} == '1'
+if shape == "rettangolare"
     grid = creategrid(centers);
     errors = checkerrors(im, grid, radii);
 else

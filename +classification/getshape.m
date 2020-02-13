@@ -1,17 +1,20 @@
-function shape = getshape(box, mask)
-%CIAO Summary of this function goes here
-%   Detailed explanation goes here
-e = regionprops(mask, 'Eccentricity');
-if (e.Eccentricity < 0.53)
-    disp("quadrato");
-    folder = "TrainingSet/Quadrate";
-    % continue;
-shape = "square";
-else
-    folder = "TrainingSet/Rettangolari";
-    disp("rettangolo");
-shape = "rectangle";
-    % grid = create_grid(centers);
-end
+function shape = getshape(mask)
+%GETSHAPE
+
+props = regionprops(mask, "Eccentricity");
+eccentricity = props.Eccentricity;
+shape = predict(eccentricity);
+
 end
 
+function out = predict(values)
+%PREDICT
+
+load("shape-classifier.mat", "shapeclassifier");
+predicted = pdist2(values, shapeclassifier.mr) < pdist2(values, shapeclassifier.mq);
+if predicted == 1
+    out = "rettangolare";
+else
+    out = "quadrata";
+end
+end

@@ -8,10 +8,9 @@ for i = 1:numel(images)
     mask = findbox(resized);
     box = resized .* mask;
     
-    shape = classification.shape_classifier(box, mask, 0);
+    shape = classification.getshape(mask);
     
     [centers, radius] = findchocolates(box, mask, shape);
     % utils.showcircles(box, centers, radius, i);
-    disp(radius);
-    utils.generatedata(im, centers*5, radius*5, '', i);
+    utils.generatedata(im, centers*5, radius*5, 'BHO', i);
 end

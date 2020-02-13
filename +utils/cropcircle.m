@@ -7,11 +7,14 @@ function cropped = cropcircle(image, x, y, radius)
 radius = floor(radius);
 mask = fspecial('disk', radius) ~= 0;
 % semplicemente prima non usavamo la maschera!
-rect = round([x - radius, y - radius, 2 * radius, 2 * radius]);
+image = padarray(image, [radius radius], 0);
+rect = round([x, y, 2 * radius, 2 * radius]);
+
 cropped = imcrop(image, rect);
 
-disp(size(mask));
-disp(size(cropped));
+% disp(rect);
+% disp(size(mask));
+% disp(size(cropped));
 
 cropped = im2double(cropped) .* im2double(mask);
 cropped = im2uint8(cropped);

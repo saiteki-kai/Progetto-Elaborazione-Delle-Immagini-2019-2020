@@ -21,159 +21,144 @@
 function errors = checkerrors(im, centers, radius)
 %CHECK_ERRORS ...
 
-% maybe a struct ...
-% la griglia serve solo per le rettangolari
-% griglia come parametro opzionale
-
 if ~isinteger(im)
-    error('L''immagine deve essere RGB');
+    error("L'immagine deve essere RGB");
 end
 
 centers = centers * 5;
 radius = radius * 5;
 
 [n, m, ~] = size(centers);
-
 if n == 6 && m == 4
-    % rectangular
     errors = checkrectangle(im, centers, radius);
 else
-    % squared
-   % disp("square");
-    errors = checksquared(im, centers, radius);
-end
+    errors = checksquare(im, centers, radius);
 end
 
+end
 
-function errors = checksquared(im, centers, radius)
-    nstickers = 0;
-    nferrerorochers = 0;
-    errors = [];
-    for i = 1 : length(centers)
-        choco = utils.cropcircle(im, centers(i, 1), centers(i, 2), radius);
-        choco_type = classification.choco_classifier(choco, 0);
-        if choco_type{1} == "ferrero_rocher"
-            nferrerorochers = nferrerorochers + 1;
-            X = existsticker(choco);
-            if X == 1
-                nstickers = nstickers + X;
-            else
-                curr = [centers(i, 1), centers(i, 2)];
-                errors = [errors; curr];
-            end
-        else
-            curr = [centers(i, 1), centers(i, 2)];
-            errors = [errors; curr];
-        end
+function errors = checksquare(im, centers, radius)
+%CHECKSQUARE
+
+errors = [];
+nStamps = 0;
+for i = 1 : length(centers)
+    if nStamps == 24, break, end
+    
+    x = centers(i, 1);
+    y = centers(i, 2);
+    choco = utils.cropcircle(im, x, y, radius);
+    
+    if getcode(choco) == 1
+        nStamps = nStamps + 1;
+    else
+        x = centers(i, 1);
+        y = centers(i, 2);
+        errors = [errors; x y];
     end
 end
 
+if  nStamps == 24
+    errors = [];
+end
+
+end
 
 function errors = checkrectangle(im, centers, radius)
-    [n, m, ~] = size(centers);
-    grid = zeros(n, m);
-    for i = 1 : n
-        for j = 1 : m
-            choco = utils.cropcircle(im, centers(i, j, 1), centers(i, j, 2), radius);
-            grid(i, j) = encodetype(choco);
-        end
-    end
-    
-    true_grid1 = [
-        2, 2, 2, 2, 2, 2;
-        1, 1, 1, 1, 1, 1;
-        1, 1, 1, 1, 1, 1;
-        3, 3, 3, 3, 3, 3;
-    ];
+%CHECKRECTANGLE 
 
-    true_grid2 = [
-        3, 3, 3, 3, 3, 3;
-        1, 1, 1, 1, 1, 1;
-        1, 1, 1, 1, 1, 1;
-        2, 2, 2, 2, 2, 2;
-    ];
-
-    p1 = grid == true_grid1';
-    p2 = grid == true_grid2';
-    
-    if sum(p1 == 0, 'all') <= sum(p2 == 0, 'all')
-        grid = p1;
-    else
-        grid = p2;
-    end
-    
-    errors = [];
-    for i = 1 : n
-        for j = 1 : m
-            if grid(i, j) == 0
-                curr = [centers(i, j, 1) centers(i, j, 2)];
-                errors = [errors; curr];
-            end
-        end
+[n, m, ~] = size(centers);
+grid = zeros(n, m);
+for i = 1 : n
+    for j = 1 : m
+        x = centers(i, j, 1);
+        y = centers(i, j, 2);
+        choco = utils.cropcircle(im, x, y, radius);
+        grid(i, j) = getcode(choco);
     end
 end
 
-function out = encodetype(choco)
-    chocotype = classification.choco_classifier(choco, 0);
-    if chocotype{1} == "ferrero_rocher"
-        if existsticker(choco) == 1
-            out = 1;
-        else
-            out = 4;
-        end
-    elseif chocotype{1} == "ferrero_noir"
-        out = 2;
-    elseif chocotype{1} == "raffaello"
-        out = 3;
-    else
-        out = 4;
-    end
+conf1 = [
+    2, 2, 2, 2, 2, 2;
+    1, 1, 1, 1, 1, 1;
+    1, 1, 1, 1, 1, 1;
+    3, 3, 3, 3, 3, 3;
+];
+
+conf2 = [
+    3, 3, 3, 3, 3, 3;
+    1, 1, 1, 1, 1, 1;
+    1, 1, 1, 1, 1, 1;
+    2, 2, 2, 2, 2, 2;
+];
+
+p1 = grid == conf1';
+p2 = grid == conf2';
+
+if sum(p1 == 0, 'all') <= sum(p2 == 0, 'all')
+    grid = p1;
+else
+    grid = p2;
 end
 
+errors = [];
+for i = 1 : n
+    for j = 1 : m
+        if grid(i, j) == 0
+            x = centers(i, j, 1);
+            y = centers(i, j, 2);
+            errors = [errors; x y];
+        end
+    end
+end
+end
 
-% function out = existsticker(image)
-% 
-% %     imDark = imadjust(saturation, [], [], 5);
-% %     imBright = gray;
-% %     imshow(imDark < 0.01);
-% %     image = imadjustn(image, [], [], 0.8);
-%     
-%     image = imadjustn(image, [], [], 1.7);
-%     hsv = rgb2hsv(image);
-%     lab = rgb2lab(image);
-%     mask = rgb2gray(image) == 0;
-%     I1 = (hsv(:,:,2) < 0.4);
-%     I2 = lab(:,:,3) > 30;
-%     imshow(I2);
-%     pause(5);
-%     I2 = imdilate(I2, strel('disk', 15));
-%     I = I1 .* ~I2;
-%     I = I .* ~mask;
-%     
-%     I = imfill(I, 'holes');
-%     I = imerode(I, strel('disk', 5));
-%     I = bwareafilt(I > 0.5, 1);
-%     I = imdilate(I, strel('disk', 15));
-%     
-%     imshow(im2double(image));
-%     pause(1);
-%     imshow(I .* im2double(image));
-%     pause(1);
-%     
-% %     I = I < 0.3;
-% %     I = imfill(I, 'holes');
-% %     I = imerode(I, strel('disk', 19));
-% %     bw = bwareafilt(I, 1);
-% %     bw = imdilate(bw, strel('disk', 15));
-% %     imshow(image);
-% %     pause(1);
-% %     imshow(bw .* im2double(image));
-% %     pause(1);
-%     
-%     [~, n] = bwlabel(I);
-%     if n == 1
-%         out = 1;
-%     else
-%         out = 0;
-%     end
-% end
+function out = getcode(choco)
+%GETCODE associates a code to a choco type
+
+chocoType = classification.getchocotype(choco);
+
+if chocoType == "ferrero_rocher" && existsstamp(choco)
+    out = 1;
+elseif chocoType == "ferrero_noir"
+    out = 2;
+elseif chocoType == "raffaello"
+    out = 3;
+else
+    out = 4;
+end
+
+end
+
+function out = existsstamp(im)
+%ISSTAMP verify the existence of the badge
+
+hsv = rgb2hsv(im);
+lab = rgb2lab(im);
+
+S = hsv(:,:,2);
+b = lab(:,:,3);
+B = im(:,:,3);
+
+S = S > graythresh(S);
+b = (b + 128) / 255;
+b = b > graythresh(b);
+B = B < graythresh(B);
+
+I = ~(S | b | B);
+I = imdilate(I, strel('disk', 5));
+I = imfill(I, 'holes');
+I = imerode(I, strel('disk', 15));
+% più grande possibile
+% minore del raggio del bollino più piccolo
+
+if any(I(:))
+    I = bwareafilt(I, 1);
+    out = sum(I(:)) > 400;
+else
+    out = false;
+end
+
+% figure; imshowpair(im, I, 'blend');
+end
+

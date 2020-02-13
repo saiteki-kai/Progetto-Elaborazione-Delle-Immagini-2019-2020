@@ -7,8 +7,7 @@ function [centers, radius] = findchocolates(im, mask, shape)
 
 props = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength');
 
-
-if shape{1} == '1'
+if shape == "rettangolare"
    [centers, radii] = handleRectangleBoxes(im, mask, props, 0.75);
 else
    [centers, radii] = handleSquareBoxes(im, mask, props, 0.35);
