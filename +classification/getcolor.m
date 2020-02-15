@@ -1,5 +1,4 @@
 function color = getcolor(im)
-%GETCHOCOTYPE
 
 qhist = utils.compute_qhist(im);
 load("color-classifier.mat", "colorClassifier");

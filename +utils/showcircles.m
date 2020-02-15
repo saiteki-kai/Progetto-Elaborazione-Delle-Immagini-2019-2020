@@ -3,16 +3,16 @@
 % i centri e raggi
 % indice i (soltanto a scopo di test) per salvare l'immagine
 
-function showcircles(image, centers, radius, i)
+function showcircles(image, centers, radii, i, folder, shape)
     h = figure;
     imshow(image); title("Dark");
     hold on;
     viscircles(centers, ...
-        radius * ones(length(centers), 1), ...
+        radii, ...
         'EdgeColor', 'b', ...
         'LineWidth', 3); axis image;
     if i ~= 0
-        saveas(h, "./Test2/background(White)/" + i + ".jpg");
+        saveas(h, "Presentazione/findchocolates/" + shape + "/" + folder + "/" + i + ".jpg");
         close(h);
     end
 end

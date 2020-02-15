@@ -2,10 +2,10 @@
 
 nImages = numel(images);
 
-qhist = zeros(nImages, 4096);
+qhist = zeros(nImages, 144);
 for i = 1 : nImages
     im = imread(images{i});
-    qhist(i,:) = utils.compute_qhist(im);
+    qhist(i,:) = utils.compute_CEDD(im);
 end
 
 [train, test] = classification.partdata(qhist, labels);

@@ -2,12 +2,19 @@ function chocoType = getchocotype(im)
 %GETCHOCOTYPE
 
 color = classification.getcolor(im);
+isreject = classification.isreject(im);
 
-cedd = utils.compute_CEDD(im);
-load('choco-classifier.mat', 'chococlassifier');
-predicted = predict(chococlassifier, cedd);
-chocoType = predicted{:};
-
-
+if isreject
+    chocoType = "rigetto";
+else
+    switch color
+        case "dorato"
+            chocoType = "ferrero_rocher";
+        case "nero"
+            chocoType = "ferrero_noir";
+        case "bianco"
+            chocoType = "raffaello";
+    end
+end
 
 end

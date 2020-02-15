@@ -4,13 +4,16 @@
 % - eccentricity, orientation, centroid
 % - majoraxis, minoraxis
 
-function showellipse(image, s)
+function showellipse(image, mask, showimage)
     
-    imshow(image);
+    s = regionprops(mask, 'BoundingBox', 'Eccentricity', 'MajorAxisLength', ...
+        'MinorAxisLength', 'Orientation', 'Centroid');
     
-    hold on;
+    if (showimage)
+        imshow(image);
+        hold on;
+    end
     
-
     rectangle('Position', s.BoundingBox, 'EdgeColor', 'r');
 
     phi = linspace(0,2*pi,50);
@@ -33,8 +36,18 @@ function showellipse(image, s)
 
         x = xy(1,:) + xbar;
         y = xy(2,:) + ybar;
+        
+        dist = vecnorm(xy)';
+        
+        x = x';
+        y = y';
+        
+        [~, ii] = maxk(dist, 3);
+        [~, jj] = mink(dist, 2);
+        plot(x(ii), y(ii));
+        plot(x(jj), y(jj));
 
-        plot(x,y,'r','LineWidth',2);
+        scatter(x, y);
     end
     
     hold off

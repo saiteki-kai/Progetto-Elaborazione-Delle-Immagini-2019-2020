@@ -2,7 +2,7 @@
 
 for i=1:numel(images)
     im = imread(images{i});
-    qhist = utils.compute_qhist(im);
+    qhist = utils.compute_CEDD(im);
    
     load('color-classifier.mat', 'colorClassifier');
     predicted = predict(colorClassifier, qhist);

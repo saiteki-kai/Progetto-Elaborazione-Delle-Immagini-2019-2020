@@ -100,7 +100,7 @@ for r=1:6
 
         residuals = abs(y - yfit);
         %disp(residuals);
-
+        
 %         scatter(sorted(:,1), y, 'filled', 'y');
 %         hold on;
 %         plot(sorted(:,1), yfit);

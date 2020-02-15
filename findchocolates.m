@@ -56,7 +56,7 @@ s = adapthisteq(s);
     'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'dark');
 
-[centers, radii] = circleFilter(image, centers, radii, metrics, [rmin, rmax]);
+[centers, radii] = circleFilter(image, mask, centers, radii, metrics, [rmin, rmax]);
 end
 
 function [centers, radii] = handleSquareBoxes(image, mask, props, alfa)
@@ -89,7 +89,7 @@ s = adapthisteq(s);
     'EdgeThreshold', 0.1, ...
     'ObjectPolarity', 'dark');
 
-[centers2, radii2] = circleFilter(image, centers, radii, metrics, [rmin, rmax]);
+[centers2, radii2] = circleFilter(image, mask, centers, radii, metrics, [rmin, rmax]);
 
 centers = [centers1; centers2];
 radii = [radii1; radii2];
@@ -98,7 +98,7 @@ radii = [radii1; radii2];
 radii = radii + 5;
 end
 
-function [centers, radii] = circleFilter(im, centers, radii, metrics, range)
+function [centers, radii] = circleFilter(im, ~, centers, radii, metrics, range)
 % CIRCLEFILTER
 % ritorna i centri e raggi dei cerchi
 % che sono i presunti cioccolatini
@@ -110,46 +110,38 @@ centers = centers(metrics > 0.2, :); %0.1
 radii = radii(metrics > 0.2); %0.1
 
 % erodo un pò di scatola
-hsv = rgb2hsv(im);
+hsv = rgb2hsv(box);
 bw = hsv(:,:,2) > 0.5;
-bw = imclose(bw, strel('disk', range(2)));
-bw = imerode(bw, strel('disk', fix(range(1)/4)));
-S = bw .* hsv(:,:,2);
-
-mask = S > 0;
-mask = imfill(mask, 'holes');
-mask = imerode(mask, strel('disk', 9));
-
-% (solo a scopo visivo)
-% imDark = (~boxMask) + hsv(:,:,2);
+bw = imclose(bw, strel('disk', fix(range(2))));
+bw = imerode(bw, strel('disk', fix(range(1))));
 
 % tutti i cerchi (x,y) che non appartengono alla scatola li tolgo
-[centers, radii] = removeExternals(im, mask, centers, radii, range(1));
+[centers, radii] = removeExternals(im, bw, centers, radii, range(1));
 
 % aggiusto dimensioni dei raggi con media e varianza
 m = mean(radii);
-d = std(radii);
+% d = std(radii);
 radii = m * ones(length(radii), 1); % - 2 * d;
 
 % tolgo gli overlap
 [centers, radii] = removeOverlap(centers, radii, [range(1), range(2)], 1);
 end
 
-function [centers, radii] = removeExternals(im, mask, centers, radii, r)
+function [centers, radii] = removeExternals(~, mask, centers, radii, r)
 %REMOVEEXTERNALS
 % ritorna i centri e i raggi dei cerchi
-% che non hanno più del 5% di bianco al loro interno
-% se più del 5% cerchio è bianco allora lo elimino
+% che non hanno più del 10% di bianco al loro interno
+% se più del 10% cerchio è bianco allora lo elimino
 % serve per scartare gli eventuali cerchi fuori dalla scatola
 
-gray = rgb2gray((im .* mask) + (~mask));
+%gray = rgb2gray((im .* mask) + (~mask));
 
 v = false(length(centers), 1);
 for k = 1 : length(centers)
-    circle = utils.cropcircle(gray, centers(k, 1), centers(k, 2), r);
+    circle = utils.cropcircle(mask, centers(k, 1), centers(k, 2), r);
     N = length(circle)^2;
     n = sum(circle == 1, 'all');
-    if n <= N/20
+    if n <= N/10
         v(k) = 1;
     end
 end
@@ -158,7 +150,7 @@ centers = centers(v, :);
 radii = radii(v);
 end
 
-function [centers, radii] = removeOverlap(centers, radii, range, beta)
+function [centers, radii] = removeOverlap(centers, radii, ~, ~)
 %REMOVEOVERLAP
 % dati i centri e i raggi e un beta
 % perogni cerchio (x1, y1) e raggio r1
@@ -172,30 +164,23 @@ new_centers = [];
 new_radii = [];
 
 for k = 1 : length(centers)
-    other_centers = centers([1:k-1, k+1:length(centers)], :); 
+    other_centers = centers([1:k-1, k+1:length(centers)], :);
     other_radii = radii([1:k-1, k+1:length(centers)])';
     distances = vecnorm((other_centers - centers(k, :))');
     
-    minDist = 30;%range(2) - range(1);
-    indexes = distances < minDist;
-    %disp("k:" + k + ", dists: " + distances(indexes));
-    %disp(indexes);
-     
-%     viscircles(centers, radii, 'EdgeColor', 'b', 'LineWidth', 3); axis image;
-%     viscircles(centers(k,:), radii(k), 'EdgeColor', 'm', 'LineWidth', 3);
-%     viscircles(other_centers(indexes,:), other_radii(indexes), 'EdgeColor', 'y', 'LineWidth', 3); axis image;
-
+    % minima distanza affinchè possa esserci overlap
+    indexes = distances < 30;%2 * radii(k);
+    
+    if all(indexes == 0)
+        new_centers = [new_centers; centers(k, :)];
+        new_radii = [new_radii; radii(k)];
+        continue;
+    end
+    
     found = false;
-    for w=1:length(indexes)
-        if indexes(w) == 0, continue, end
-        
-%         viscircles(other_centers(w,:), other_radii(w) ./ 3, 'EdgeColor', 'g', 'LineWidth', 3); axis image;
-%         pause(1);
-                
-        b = distances(w) < radii(k) + other_radii(w);
-        %disp(distances(w) + " < " + (radii(k) + other_radii(w)) + " = " + b);
-        
-        if distances(w) < beta * (radii(k) + other_radii(w))
+    for w = 1 : length(indexes)
+        if indexes(w) == 0, continue, end  
+        if distances(w) < (radii(k) + other_radii(w))
             newX = (centers(k, 1) + other_centers(w, 1)) / 2;
             newY = (centers(k, 2) + other_centers(w, 2)) / 2;
             new_centers = [new_centers; [newX, newY]];
@@ -206,14 +191,7 @@ for k = 1 : length(centers)
         end
     end
     
-    if ~found
-        new_centers = [new_centers; centers(k, :)];
-        new_radii = [new_radii; radii(k)];
-    end
-    
-%     viscircles(new_centers, new_radii, 'EdgeColor', 'r', 'LineWidth', 3); axis image;
-%     pause(1);
 end
-    centers = new_centers;
-    radii = new_radii;  
+centers = new_centers;
+radii = new_radii;  
 end
