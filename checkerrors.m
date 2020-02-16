@@ -130,6 +130,8 @@ end
 
 end
 
+
+%%%%% AUMENTARE IL RAGGIO DEI CERCHI PER I BOLLINI FUORI RENGE %%%%%....
 function out = existsstamp(im)
 %ISSTAMP verify the existence of the badge
 

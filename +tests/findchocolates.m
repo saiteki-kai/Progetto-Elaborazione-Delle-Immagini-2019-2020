@@ -1,5 +1,5 @@
 images = utils.getfiles('Acquisizioni/');
-for i = 57:57%numel(images)
+for i = 1:numel(images)
     im = imread(images{i});
     resized = imresize(im, 1/5);
     resized = im2double(resized);
@@ -13,57 +13,57 @@ for i = 57:57%numel(images)
     
     if shape == "rettangolare"
 
-%         rmax = fix(props.MinorAxisLength / (8 - 0.75));
-%         rmin = fix(rmax / 3);
-%         
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         imwrite(box, "Presentazione/findchocolates/" + shape + "/1box/"+i+".jpg");
-%         pause(1);
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         
-%         hsv = rgb2hsv(box);
-%         s = hsv(:,:,2);
-%         
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         imwrite(s, "Presentazione/findchocolates/" + shape + "/2sat/"+i+".jpg");
-%         pause(1);
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         
-%         s = ~mask + s;
-%         
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         imwrite(s, "Presentazione/findchocolates/" + shape + "/3~sat/"+i+".jpg");
-%         pause(1);
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         
-%         s = adapthisteq(s);
-%         
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         imwrite(s, "Presentazione/findchocolates/" + shape + "/4~sateq/"+i+".jpg");
-%         pause(1);
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         
-%         [centers, radii, metrics] = imfindcircles(s, [rmin rmax], ...
-%                 'Method', 'TwoStage', ...
-%                 'Sensitivity', 0.9, ...
-%                 'EdgeThreshold', 0.1, ...
-%                 'ObjectPolarity', 'dark');
-%                         
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         utils.showcircles(s, centers, radii, i, '5circles', shape);
-%         pause(1);
-%         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         
-%         [centers, radii] = circleFilter(...
-%             s, box, mask, centers, radii, metrics, [rmin rmax], i, shape); 
- 
-    else
-        
-        rmax = fix(props.MinorAxisLength / (8 - 0.35));
+        rmax = fix(props.MinorAxisLength / (8 - 0.75));
         rmin = fix(rmax / 3);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        %imwrite(box, "Presentazione/findchocolates/" + shape + "/1box/"+i+".jpg");
+%         imwrite(box, "Presentazione/findchocolates/" + shape + "/1box/"+i+".jpg");
+%         pause(1);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        hsv = rgb2hsv(box);
+        s = hsv(:,:,2);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         imwrite(s, "Presentazione/findchocolates/" + shape + "/2sat/"+i+".jpg");
+%         pause(1);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        s = ~mask + s;
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         imwrite(s, "Presentazione/findchocolates/" + shape + "/3~sat/"+i+".jpg");
+%         pause(1);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        s = adapthisteq(s);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         imwrite(s, "Presentazione/findchocolates/" + shape + "/4~sateq/"+i+".jpg");
+%         pause(1);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        [centers, radii, metrics] = imfindcircles(s, [rmin rmax], ...
+                'Method', 'TwoStage', ...
+                'Sensitivity', 0.9, ...
+                'EdgeThreshold', 0.1, ...
+                'ObjectPolarity', 'dark');
+                        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         utils.showcircles(s, centers, radii, i, '5circles', shape);
+%         pause(1);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        [centers, radius] = circleFilter(...
+            s, box, mask, centers, radii, metrics, ...
+            [rmin rmax], i, shape, 1, 0.7); 
+    
+    else        
+        rmax = fix(props.MinorAxisLength / 8);
+        rmin = fix(rmax / 3);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         imwrite(box, "Presentazione/findchocolates/" + shape + "/1box/"+i+".jpg");
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -71,21 +71,21 @@ for i = 57:57%numel(images)
         Cb = ycbcr(:,:,2);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-       % imwrite(Cb, "Presentazione/findchocolates/" + shape + "/2cb/"+i+".jpg");
+%         imwrite(Cb, "Presentazione/findchocolates/" + shape + "/2cb/"+i+".jpg");
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
-        Cb = (~mask) + Cb;
+        Cb = ~mask + Cb; 
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      %  imwrite(Cb, "Presentazione/findchocolates/" + shape + "/3~cb/"+i+".jpg");
+%         imwrite(Cb, "Presentazione/findchocolates/" + shape + "/3~cb/"+i+".jpg");
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         Cb = adapthisteq(Cb);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-     %   imwrite(Cb, "Presentazione/findchocolates/" + shape + "/4~cbeq/"+i+".jpg");
+%         imwrite(Cb, "Presentazione/findchocolates/" + shape + "/4~cbeq/"+i+".jpg");
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -101,11 +101,12 @@ for i = 57:57%numel(images)
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         [centers1, radius1] = circleFilter(...
-            Cb, box, mask, centers, radii, metrics, [rmin, rmax], i, shape, 1);
-        
-      %  disp(radius2);
+            Cb, box, mask, centers, radii, metrics, ...
+            [rmin, rmax], i, shape, 1, 0.45);
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %    utils.showcircles(Cb, centers1, radius1, i, '11final', shape);
+%         utils.showcircles(Cb, centers1, ...
+%             radius1 * ones(size(centers1, 1), 1), i, '11final', shape);
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
@@ -114,39 +115,43 @@ for i = 57:57%numel(images)
         s = hsv(:,:,2);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %    imwrite(s, "Presentazione/findchocolates/" + shape + "/12sat/"+i+".jpg");
+%         imwrite(s, "Presentazione/findchocolates/" + shape + "/12sat/"+i+".jpg");
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         s = ~mask + s;
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- %       imwrite(s, "Presentazione/findchocolates/" + shape + "/13~sat/"+i+".jpg");
+%         imwrite(s, "Presentazione/findchocolates/" + shape + "/13~sat/"+i+".jpg");
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         s = adapthisteq(s);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   %     imwrite(s, "Presentazione/findchocolates/" + shape + "/14~sateq/"+i+".jpg");
+%         imwrite(s, "Presentazione/findchocolates/" + shape + "/14~sateq/"+i+".jpg");
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
         [centers, radii, metrics] = imfindcircles(s, [rmin rmax], ...
         'Method', 'TwoStage', ...
-        'Sensitivity', 0.9, ...
-        'EdgeThreshold', 0.1, ...
+        'Sensitivity', 0.85, ...
+        'EdgeThreshold', 0.05, ...   
         'ObjectPolarity', 'dark');
-        
+
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %         utils.showcircles(s, centers, radii, i, '15circles', shape);
 %         pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         [centers2, radius2] = circleFilter(...
-            s, box, mask, centers, radii, metrics, [rmin, rmax], i, shape, 2);
-
-   %     disp(radius2);
+            s, box, mask, centers, radii, metrics, ...
+            [rmin, rmax], i, shape, 2, 0.45);
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         utils.showcircles(box, centers2, radius2 * ones(size(centers2, 1), 1), i, '21final', shape);
+%         pause(1);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         centers = [centers1; centers2];
         radii = [radius1; radius2];
@@ -154,42 +159,48 @@ for i = 57:57%numel(images)
         %centers = unique(round(centers), 'rows');
         radius = mean(radii);
         
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%         utils.showcircles(box, centers, radius * ones(size(centers, 1), 1), i, '21union', shape);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         utils.showcircles(box, centers, radius * ones(size(centers, 1), 1), i, '22union', shape);
 %         pause(1);
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
         
-        [centers, radius] = removeOverlap(centers, radius);
-        %radius = radius + 5; %aggiungo la metà di un bollino
+        % da vedere questo parametro!
+        [centers, radius] = removeOverlap(centers, radius, 0.45);
     end
     
 %     m = mean(radii);
 %     d = std(radii);
 %     radius = m - 2 * d;
     
-    if shape == "quadrata"
+    if shape == "rettangolare"
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        utils.showcircles(box, centers, radius * ones(size(centers, 1), 1), i, '22final', shape);
+        utils.showcircles(box, centers, radius * ones(size(centers, 1), 1), i, '11final', shape);
+        pause(1);
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    else
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        utils.showcircles(box, centers, radius * ones(size(centers, 1), 1), i, '23final', shape);
+        pause(1);
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     end
     % utils.generatedata(im, centers*5, radius*5, 'BHO', i);
 end
 
 
-function [centers, radii] = circleFilter(...
-    s, box, ~, centers, radii, metrics, range, i, shape, number)
+function [centers, radius] = circleFilter(...
+    s, box, ~, centers, radii, metrics, range, i, shape, number, K)
 
         centers = centers(metrics > 0.2, :);
         radii = radii(metrics > 0.2);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if number == 1
+%         if number == 1
 %             utils.showcircles(s, centers, radii, i, '6metrics', shape);
 %             pause(1);
-        else
+%         else
 %             utils.showcircles(s, centers, radii, i, '16metrics', shape);
 %             pause(1);
-        end
+%         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         hsv = rgb2hsv(box);
@@ -198,51 +209,51 @@ function [centers, radii] = circleFilter(...
         bw = imerode(bw, strel('disk', fix(range(1))));
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if number == 1
-            imwrite(bw .* box, "Presentazione/findchocolates/" + shape + "/7eroded/"+i+".jpg");
-            %pause(1);
-        else
-            imwrite(bw .* box, "Presentazione/findchocolates/" + shape + "/17eroded/"+i+".jpg");
-            %pause(1);
-        end
+%         if number == 1
+%            imwrite(bw .* box, "Presentazione/findchocolates/" + shape + "/7eroded/"+i+".jpg");
+%             pause(1);
+%         else
+%            imwrite(bw .* box, "Presentazione/findchocolates/" + shape + "/17eroded/"+i+".jpg");
+%             pause(1);
+%         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         [centers, radii] = removeExternals(box, bw, centers, radii, range(1));
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if number == 1
-            utils.showcircles(s, centers, radii, i, '8externals', shape);
-            pause(1);
-        else
-            utils.showcircles(s, centers, radii, i, '18externals', shape);
-            pause(1);
-        end
+%         if number == 1
+%             utils.showcircles(s, centers, radii, i, '8externals', shape);
+%             pause(1);
+%         else
+%             utils.showcircles(s, centers, radii, i, '18externals', shape);
+%             pause(1);
+%         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         m = mean(radii);
         radii = m * ones(length(radii), 1);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if number == 1
-            utils.showcircles(s, centers, radii, i, '19radii', shape);
-            pause(1);
-        else
-            utils.showcircles(s, centers, radii, i, '19radii', shape);
-            pause(1);
-        end
+%         if number == 1
+%             utils.showcircles(s, centers, radii, i, '9radii', shape);
+%             pause(1);
+%         else
+%             utils.showcircles(s, centers, radii, i, '19radii', shape);
+%             pause(1);
+%         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % centers, radii, range, 1
-        [centers, radius] = removeOverlap(centers, radii(1));
+        [centers, radius] = removeOverlap(centers, radii(1), K);
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        if number == 1
-            utils.showcircles(s, centers, radius * ones(size(centers, 1), 1), i, '10overlap', shape);
-            pause(1);
-        else
-            utils.showcircles(s, centers, radius * ones(size(centers, 1), 1), i, '20overlap', shape);
-            pause(1);
-        end
+%         if number == 1
+%             utils.showcircles(s, centers, radius * ones(size(centers, 1), 1), i, '10overlap', shape);
+%             pause(1);
+%         else
+%             utils.showcircles(s, centers, radius * ones(size(centers, 1), 1), i, '20overlap', shape);
+%             pause(1);
+%         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 end
 
@@ -273,18 +284,16 @@ centers = centers(v, :);
 radii = radii(v);
 end
 
-function [centers, radius] = removeOverlap(centers, radius)
+function [centers, radius] = removeOverlap(centers, radius, K)
 newcenters = [];
 toremove = [];
-
-disp(length(centers));
-disp(length(radius));
-
 for k = 1 : length(centers)
     othercenters = centers([1:k-1, k+1:length(centers)], :);
     distances = vecnorm((othercenters - centers(k, :))');
     
-    overlap = distances < 0.7 * radius;
+    % 0.7 per le rettangolari
+    % 0.45 per le quadrate
+    overlap = distances < K * radius * 2; 
     
     if sum(overlap(:)) ~= 0
         distances = distances(overlap);
@@ -304,6 +313,15 @@ if ~isempty(newcenters)
 end
 end
 
+%     imshow(box);
+%     hold on;
+%     viscircles(centers(k, :), ...
+%     radius, 'EdgeColor', ...
+%     'r', 'LineWidth', 3); axis image;
+%     viscircles(othercenters(overlap, :), ...
+%     radius * ones(size(othercenters(overlap, :), 1), 1), 'EdgeColor', ...
+%     'y', 'LineWidth', 3); axis image;
+%     pause(0.3);
 
 % imshow(box);
 % hold on;
