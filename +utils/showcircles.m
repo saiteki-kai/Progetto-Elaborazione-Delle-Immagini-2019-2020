@@ -5,14 +5,16 @@
 
 function showcircles(image, centers, radii, i, folder, shape)
     h = figure;
-    imshow(image); title("Dark");
+    imshow(image); title("Image: " + i);
     hold on;
     viscircles(centers, ...
         radii, ...
         'EdgeColor', 'b', ...
         'LineWidth', 3); axis image;
-    if i ~= 0
-        saveas(h, "Presentazione/findchocolates/" + shape + "/" + folder + "/" + i + ".jpg");
-        close(h);
-    end
+    pause(1);
+    close(h);
+%     if i ~= 0
+%         saveas(h, "Presentazione/findchocolates/" + shape + "/" + folder + "/" + i + ".jpg");
+%         close(h);
+%     end
 end
