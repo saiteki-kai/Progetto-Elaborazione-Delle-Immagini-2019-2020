@@ -9,7 +9,7 @@ for i = 1:numel(images)
     shape = classification.getshape(mask);
     
     [centers, radius] = findchocolates(box, mask, shape);
-    utils.showcircles(box, centers, radius * ones(size(centers, 1), 1), i, '5circles', shape);
+    utils.showcircles(box, centers, radius * ones(size(centers, 1), 1), 0, '5circles', shape);
 end
 
 %    props = regionprops(mask, 'MajorAxisLength', 'MinorAxisLength');

@@ -8,16 +8,12 @@ nImages = numel(images);
 %     cedd(i,:) = utils.compute_CEDD(im);
 % end
 
-% lbp = zeros(nImages, 30, 'single');
+% lbp = zeros(nImages, 30);
 % for i = 1 : nImages
 %     im = imread(images{i});
-%     hsv = rgb2hsv(im);
-%     hsv(:,:,2) = adapthisteq(hsv(:,:,2));
-%     rgb = hsv2rgb(hsv);
-%     
-%     R = utils.compute_lbp(rgb(:,:,1));
-%     G = utils.compute_lbp(rgb(:,:,2));
-%     B = utils.compute_lbp(rgb(:,:,3));
+%     R = utils.compute_lbp(im(:,:,1));
+%     G = utils.compute_lbp(im(:,:,2));
+%     B = utils.compute_lbp(im(:,:,3));
 %     lbp(i,:) = [R G B];
 % end
 
@@ -47,9 +43,59 @@ nImages = numel(images);
 %     qhist(i,:) = utils.compute_qhist(im);
 % end
 
-[train, test] = classification.partdata(lbp, labels);
+% max 293x293
+% min 231x231
 
-chococlassifier = fitcknn(train.values, train.labels, 'NumNeighbors', 5);
+qhist = zeros(nImages, 4096);
+hog = zeros(nImages, 10404);
+lbp = zeros(nImages, 9720);
+for i = 1 : nImages
+    im = imread(images{i});
+    im = imresize(im, [293, 293]);
+    
+%     [hog_4x4, vis4x4] = extractHOGFeatures(im,'CellSize',[4 4]);
+%     [hog_8x8, vis8x8] = extractHOGFeatures(im,'CellSize',[8 8]);
+%     [hog_16x16, vis16x16] = extractHOGFeatures(im,'CellSize', [16 16]);
+%     [hog_32x32, vis32x32] = extractHOGFeatures(im,'CellSize', [32 32]);
+%     
+%     h =figure; 
+%     subplot(2,4,1:4); imshow(im);
+% 
+%     % Visualize the HOG features
+% 
+%     subplot(2,4,5);
+%     plot(vis4x4); 
+%     title({'CellSize = [4 4]'; ['Length = ' num2str(length(hog_4x4))]});
+% 
+%     subplot(2,4,6);
+%     plot(vis8x8); 
+%     title({'CellSize = [8 8]'; ['Length = ' num2str(length(hog_8x8))]});
+%     
+%     subplot(2,4,7);
+%     plot(vis16x16); 
+%     title({'CellSize = [16 16]'; ['Length = ' num2str(length(hog_16x16))]});
+%     
+%     subplot(2,4,8);
+%     plot(vis32x32); 
+%     title({'CellSize = [32 32]'; ['Length = ' num2str(length(hog_32x32))]});
+%     
+%     pause(8);
+%     close(h);
+
+    R = utils.compute_lbp(im(:,:,1));
+    G = utils.compute_lbp(im(:,:,2));
+    B = utils.compute_lbp(im(:,:,3));
+    
+    hog(i, :) = extractHOGFeatures(im, 'CellSize', [16 16]);
+    lbp(i,:) = [R G B];
+   % qhist(i,:) = utils.compute_qhist(im);
+
+end
+
+[train, test] = classification.partdata([lbp hog], labels);
+
+%chococlassifier = fitcknn(train.values, train.labels, 'NumNeighbors', 5);
+chococlassifier = fitcecoc(train.values, train.labels);
 save("choco-classifier.mat", "chococlassifier");
 
 trPredicted = predict(chococlassifier, train.values);
