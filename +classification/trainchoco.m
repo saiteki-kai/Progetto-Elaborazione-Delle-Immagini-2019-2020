@@ -4,7 +4,6 @@ nImages = numel(images);
 
 % max 293x293
 % min 231x231
-
 hog = zeros(nImages, 10404);
 lbpRGB = zeros(nImages, 9720);
 lbpHSV = zeros(nImages, 9720);
@@ -14,35 +13,30 @@ if ~exist("features.mat", "file")
     for i = 1 : nImages
         im = imread(images{i});
         im = imresize(im, [293, 293]);
-        im2 = histeq(im);
-            
-        hog(i, :) = extractHOGFeatures(im, 'CellSize', [16 16]);
-        lbpRGB(i, :) = [R G B];
-        lbpHSV(i, :) = [H S V];
-        lbpYCbCr(i, :) = [Y Cb Cr];
+        eq = histeq(im);
         
-        ycbcr = rgb2ycbcr(im2);
-        hsv = rgb2hsv(im2);
-        lab =  rgb2lab(im2);
+        hog(i, :) = utils.computehog(im);
         
-        H = utils.compute_lbp(hsv(:,:,1));
-        S = utils.compute_lbp(hsv(:,:,2));
-        V = utils.compute_lbp(hsv(:,:,3));
+        ycbcr = rgb2ycbcr(eq);
+        hsv = rgb2hsv(eq);
+        lab =  rgb2lab(eq);
         
-        Y = utils.compute_lbp(ycbcr(:,:,1));
-        Cb = utils.compute_lbp(ycbcr(:,:,2));
-        Cr = utils.compute_lbp(ycbcr(:,:,3));
+        H = utils.computelbp(hsv(:,:,1));
+        S = utils.computelbp(hsv(:,:,2));
+        V = utils.computelbp(hsv(:,:,3));
         
-        R = utils.compute_lbp(im2(:,:,1));
-        G = utils.compute_lbp(im2(:,:,2));
-        B = utils.compute_lbp(im2(:,:,3));
+        Y = utils.computelbp(ycbcr(:,:,1));
+        Cb = utils.computelbp(ycbcr(:,:,2));
+        Cr = utils.computelbp(ycbcr(:,:,3));
+        
+        R = utils.computelbp(eq(:,:,1));
+        G = utils.computelbp(eq(:,:,2));
+        B = utils.computelbp(eq(:,:,3));
         
         lbpRGB(i, :) = [R G B];
         lbpRGB(i, :) = [R G B];
         lbpHSV(i, :) = [H S V];
         lbpYCbCr(i, :) = [Y Cb Cr];
-        
-        
     end
     
     save("features.mat", "lbpRGB", "hog", "lbpHSV", "lbpYCbCr");
@@ -63,6 +57,8 @@ train.predicted = convertCharsToStrings(trPredicted);
 test.predicted = convertCharsToStrings(tsPredicted);
 
 
+
+% function evalclassifier()
 % metrics = zeros(30, 4);
 % for i = 1 : 30
 %     [train, test] = classification.partdata([lbpRGBeq hog], labels);
@@ -92,7 +88,7 @@ test.predicted = convertCharsToStrings(tsPredicted);
 % end
 % 
 % T = table(best, avg, worst);
-
+% end
 
 %     [hog_4x4, vis4x4] = extractHOGFeatures(im,'CellSize',[4 4]);
     %     [hog_8x8, vis8x8] = extractHOGFeatures(im,'CellSize',[8 8]);
