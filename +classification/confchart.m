@@ -1,4 +1,4 @@
-function confchart(train, test)
+function [tracc tsacc] = confchart(train, test)
 
 trcm = confusionchart(train.labels, train.predicted, ...
     'RowSummary','row-normalized','ColumnSummary','column-normalized');
