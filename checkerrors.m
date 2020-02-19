@@ -27,8 +27,8 @@ for i = 1 : length(centers)
     
     x = centers(i, 1);
     y = centers(i, 2);
-    choco = utils.cropcircle(im, x, y, radius, false);
-    
+    choco = utils.cropcircle(im, x, y, radius, true);
+    choco = imresize(choco, [239 239]);
     if getcode(choco) == 1
         nStamps = nStamps + 1;
     else
@@ -53,7 +53,8 @@ for i = 1 : n
     for j = 1 : m
         x = centers(i, j, 1);
         y = centers(i, j, 2);
-        choco = utils.cropcircle(im, x, y, radius, false);
+        choco = utils.cropcircle(im, x, y, radius, true);
+        choco = imresize(choco, [239 239]);
         grid(i, j) = getcode(choco);
     end
 end
@@ -128,14 +129,12 @@ S = S > graythresh(S);
 b = b > graythresh(b);
 B = B < graythresh(B);
 
-I = ~(S | b | B);
+I1 = ~(S | b | B);
 
-I = imopen(I, strel('disk', 5));
-I = imclose(I, strel('disk', 5));
-
+I = imopen(I1, strel('disk', 5));
 if any(I(:))
     I = bwareafilt(I, 1);
-    out = sum(I(:)) > 900;
+    out = sum(I(:)) > 350;%381
 else
     out = false;
 end
