@@ -2,8 +2,8 @@ function showresults(im, errors)
 %SHOWRESULTS
 
 [r,~,~] = size(im);
-% imshow(im);
-%hold on;
+imshow(im);
+hold on;
 if ~isempty(errors)
     rs = ones(size(errors, 1), 1) * 150; %% fix the radius
     viscircles(errors, rs, 'EdgeColor', 'r', 'LineWidth', 3), axis image;

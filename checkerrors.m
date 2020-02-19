@@ -1,23 +1,3 @@
-%     vanno gestiti i cerchi e l'invarianza per scala
-% 
-%     assumo di non avere cerchi che si intersecano
-%     per più del 25% dell' area
-% 
-%     potrebbe non predirre il giusto risultato
-%     vedere commenti c_nc_classifier ...
-% 
-%     assumo che una scatola "quadrata"
-%     per essere conforme abbia sempre
-%     un numero di ferrero rocher pari a 24
-%     con 24 bollini sopra ogiuno di essi
-
-% assumo che mi arrivi sempre un ferrero rocher e non qualcos altro
-% assumo la regione più grande sia sempre il bollino
-% erodo non più della metà del "raggio" dell'area del bollino
-% cosi tutto ciò che è più piccolo sparirà mentre rimarrà il bollino
-% se trovo più di una regione errore.
-% problema l'illuminazione se non ho davvero un bollino
-% l'illuminazione potrebbe farmi credere di averlo trovato comunque
 function errors = checkerrors(im, centers, radius)
 %CHECK_ERRORS ...
 
@@ -47,7 +27,7 @@ for i = 1 : length(centers)
     
     x = centers(i, 1);
     y = centers(i, 2);
-    choco = utils.cropcircle(im, x, y, radius);
+    choco = utils.cropcircle(im, x, y, radius, false);
     
     if getcode(choco) == 1
         nStamps = nStamps + 1;
@@ -73,7 +53,7 @@ for i = 1 : n
     for j = 1 : m
         x = centers(i, j, 1);
         y = centers(i, j, 2);
-        choco = utils.cropcircle(im, x, y, radius);
+        choco = utils.cropcircle(im, x, y, radius, false);
         grid(i, j) = getcode(choco);
     end
 end
@@ -133,7 +113,7 @@ end
 
 %%%%% AUMENTARE IL RAGGIO DEI CERCHI PER I BOLLINI FUORI RENGE %%%%%....
 function out = existsstamp(im)
-%ISSTAMP verify the existence of the badge
+%ISSTAMP verify the existence of the stamp
 
 hsv = rgb2hsv(im);
 lab = rgb2lab(im);
@@ -142,25 +122,22 @@ S = hsv(:,:,2);
 b = lab(:,:,3);
 B = im(:,:,3);
 
-S = S > graythresh(S);
 b = (b + 128) / 255;
+
+S = S > graythresh(S);
 b = b > graythresh(b);
 B = B < graythresh(B);
 
 I = ~(S | b | B);
-I = imdilate(I, strel('disk', 5));
-I = imfill(I, 'holes');
-I = imerode(I, strel('disk', 15));
-% più grande possibile
-% minore del raggio del bollino più piccolo
+
+I = imopen(I, strel('disk', 5));
+I = imclose(I, strel('disk', 5));
 
 if any(I(:))
     I = bwareafilt(I, 1);
-    out = sum(I(:)) > 400;
+    out = sum(I(:)) > 900;
 else
     out = false;
 end
-
-% figure; imshowpair(im, I, 'blend');
 end
 

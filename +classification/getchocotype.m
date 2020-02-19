@@ -4,11 +4,11 @@ function chocoType = getchocotype(im)
 im = imresize(im, [293, 293]);
 im2 = histeq(im);
 
-hog = computehog(im);
+hog = utils.computehog(im);
 
-R = computelbp(im2(:,:,1));
-G = computelbp(im2(:,:,2));
-B = computelbp(im2(:,:,3));
+R = utils.computelbp(im2(:,:,1));
+G = utils.computelbp(im2(:,:,2));
+B = utils.computelbp(im2(:,:,3));
 lbp = [R G B];
 
 load("choco-classifier.mat", "chococlassifier");
