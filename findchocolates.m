@@ -17,36 +17,15 @@ end
 
 function [centers, radius] = handlerectangle(im, mask, minorAxis)
 %HANDLERECTANGLE
-% oggetti più piccoli o più grandi di [rmin, rmax]
-% non verrebbero trovati ma contando poi i cioccolatini si vedrebbe
-% la mancanza di uno di essi quindi si riesce a risalire all' errore
-% se un intruso è di dimensioni pari al ciccolatino
-% sarà escluso dal classificatore
-% migliorare stime [rmin, rmax]
 
 rmax = fix(minorAxis / (8 - 0.75));
 rmin = fix(rmax / 3);
 alpha = 0.7;
 
-% aumento il contrasto per trovare meglio i cerchi
-% perchè i cioccolatini cosi risultano
-% più scuri dello sfondo (che li circonda)
-% come tecnica per aumentare il contrasto uso equalizzazione
-% adattiva perchè i cioccolatini con saturazione scura
-% influenzano notevolmente il risultato
-% equalizzo per confontare meglio immagini con
-% condizioni di luci diverse
-
 hsv = rgb2hsv(im);
 s = hsv(:,:,2);
 s = ~mask + s;
 s = adapthisteq(s);
-
-% trovo i cerchi con la trasformata di hough
-% threshold non più basso per non prendere troppo rumore
-% non più alto per non perdere i cerchi
-% pe le motivazioni sopra dette scelgo una
-% object polarity "dark"
 
 [centers, radii, metrics] = imfindcircles(s, [rmin rmax], ...
     'Method', 'TwoStage', ...
@@ -100,11 +79,6 @@ end
 
 function [centers, radius] = circlefilter(im, centers, radii, metrics, range, k)
 % CIRCLEFILTER
-% ritorna i centri e raggi dei cerchi
-% che sono i presunti cioccolatini
-% rimuove i cerchi esterni alla scatola
-% rimuove i cerchi con certa metrica < 0.2
-% rimuove i cerchi overlappati
 
 centers = centers(metrics > 0.2, :);
 radii = radii(metrics > 0.2);

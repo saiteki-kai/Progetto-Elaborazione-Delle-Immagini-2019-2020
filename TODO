@@ -23,33 +23,10 @@
             % - 3 neri
             % - 4 rigetto
         % conto cioccolatini
+        % (se trovo 24 rocher conforme anche se ho rigetti)
         % conto bollini
     % ritorno un valore logico 0-1
     % mostro gli eventuali errori trovati
-
-
---------------------------------------------------------------------------
-
-
-DA IMPLEMENTARE:
-
-- normalizzare le features
-- documentazione varia
-- generare dati dai cerchi trovati e etichettarli
-- migliorare i classificatori
-
-- migliorare la scelta del range di [rmin, rmax] (dovrebbe essere apposto)
-- fixare overlap (dovrebbe essere apposto)
-- migliorare radius alla fine della find_cioccolatini
-- valutare se è meglio lasciare lo sfondo nero o bianco per trovare i cerchi (il nero era meglio)
-- ricostruire eventuali cerchi mancanti
-
-- scatole quadrate check errori 
-  (come dico dove è l'errore? problemi dovuti classe di rigetto)
-
-
-- trovare una soglia per i bollini (template matching)
-- non riusciamo a classificare come rigetto i lindt
 
 --------------------------------------------------------------------------
 
