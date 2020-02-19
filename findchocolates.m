@@ -1,5 +1,5 @@
 function [centers, radius] = findchocolates(im, mask, shape)
-%FINDCHOCOLATES 
+%FINDCHOCOLATES trova i cioccolatini
 % prende in input l'immagine già segmentata
 % e la sua maschera binaria
 % ritorna i centri e il raggio dei cioccolatini

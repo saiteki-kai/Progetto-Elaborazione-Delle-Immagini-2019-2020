@@ -1,5 +1,5 @@
 function errors = checkerrors(im, centers, radius)
-%CHECK_ERRORS ...
+%CHECK_ERRORS controllo degli errori
 
 centers = centers * 5;
 radius = radius * 5;
@@ -14,7 +14,7 @@ end
 end
 
 function errors = checksquare(im, centers, radius)
-%CHECKSQUARE
+%CHECKSQUARE controllo per le scatole quadrate
 
 errors = [];
 nStamps = 0;
@@ -24,6 +24,7 @@ for i = 1 : length(centers)
     x = centers(i, 1);
     y = centers(i, 2);
     choco = utils.cropcircle(im, x, y, radius, false);
+    choco = imresize(choco, [239 239]);
     if getcode(choco) == 1
         nStamps = nStamps + 1;
     else
@@ -40,7 +41,7 @@ end
 end
 
 function errors = checkrectangle(im, centers, radius)
-%CHECKRECTANGLE 
+%CHECKRECTANGLE controllo per le scatole rettangolari
 
 [n, m, ~] = size(centers);
 grid = zeros(n, m);
@@ -49,6 +50,7 @@ for i = 1 : n
         x = centers(i, j, 1);
         y = centers(i, j, 2);
         choco = utils.cropcircle(im, x, y, radius, false);
+        choco = imresize(choco, [239 239]);
         grid(i, j) = getcode(choco);
     end
 end
@@ -89,7 +91,7 @@ end
 end
 
 function out = getcode(choco)
-%GETCODE associates a code to a choco type
+%GETCODE associa un codice ad ogni cioccolatino
 
 chocoType = classification.getchocotype(choco);
 
@@ -106,7 +108,8 @@ end
 end
 
 function out = existsstamp(im)
-%ISSTAMP verify the existence of the stamp
+%ISSTAMP verifica l'esistenza del bollino
+im = imresize(im, [239, 239]);
 
 hsv = rgb2hsv(im);
 lab = rgb2lab(im);
@@ -124,9 +127,10 @@ B = B < graythresh(B);
 I1 = ~(S | b | B);
 
 I = imopen(I1, strel('disk', 5));
+
 if any(I(:))
     I = bwareafilt(I, 1);
-    out = sum(I(:)) > 350;%381
+    out = sum(I(:)) > 150;
 else
     out = false;
 end

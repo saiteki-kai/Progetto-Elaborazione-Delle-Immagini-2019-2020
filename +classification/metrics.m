@@ -1,4 +1,5 @@
 function [accuracy, recall, precision, recallRigetto] = metrics(gt, predicted)
+%METRICS calcola le metriche per il classificatore dei cioccolatini
 
 cm = confusionmat(gt, predicted, 'order', ["ferrero_rocher","ferrero_noir","raffaello", "rigetto"]);
 
@@ -10,7 +11,6 @@ for i=1:4
     
     precision = precision * prec;
     recall = recall * rec;
-    % disp(i+") prec: " + precision + ", rec: " + recall);
 end
 
 recallRigetto = cm(4,4) / sum(cm(4, :));

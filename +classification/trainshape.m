@@ -1,5 +1,4 @@
-[images, labels] = utils.readlabels("labels.csv", "Acquisizioni/");
-labels = labels(:,2);
+[images, labels] = utils.readlabels("Data/lbl_forma.csv", "Data/Acquisizioni/");
 
 nImages = numel(images);
 
@@ -18,7 +17,7 @@ r = train.values(train.labels == "rettangolare");
 q = train.values(train.labels == "quadrata");
 shapeclassifier.mq = mean(q);
 shapeclassifier.mr = mean(r);
-save("shape-classifier.mat", "shapeclassifier");
+save("Data/shape-classifier.mat", "shapeclassifier");
 
 train.predicted = mypredict(train.values);
 test.predicted = mypredict(test.values);
@@ -27,7 +26,7 @@ classification.confchart(train, test);
 
 
 function labels = mypredict(values)
-    load("shape-classifier.mat", "shapeclassifier");
+    load("Data/shape-classifier.mat", "shapeclassifier");
     predicted = pdist2(values, shapeclassifier.mr) < pdist2(values, shapeclassifier.mq);
     
     labels = [];

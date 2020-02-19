@@ -1,10 +1,9 @@
 function cropped = cropcircle(image, x, y, radius, keepcorners)
-%CROPCIRCLE
+%CROPCIRCLE ritaglia l'immagine nel centro (x,y) dato un raggio
 % ritorna una regione (quadrata) di un cerchio
 % data l'immagine su cui effettuare l'operazione
 % il centro in cui ritagliarla e il raggio
 
-image = imresize(image, [239 239]);
 radius = floor(radius);
 
 if keepcorners

@@ -1,4 +1,5 @@
 function [train, test] = partdata(values, labels)
+%PARTDATA divide i dati in train e test
 
 cv = cvpartition(labels, "Holdout", 0.2);
 

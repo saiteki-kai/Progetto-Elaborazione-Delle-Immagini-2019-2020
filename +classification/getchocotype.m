@@ -1,5 +1,5 @@
 function chocoType = getchocotype(im)
-%GETCHOCOTYPE
+%GETCHOCOTYPE 
 
 im = imresize(im, [293, 293]);
 im2 = histeq(im);
@@ -11,7 +11,7 @@ G = utils.computelbp(im2(:,:,2));
 B = utils.computelbp(im2(:,:,3));
 lbp = [R G B];
 
-load("choco-classifier.mat", "chococlassifier");
+load("Data/choco-classifier.mat", "chococlassifier");
 predicted = predict(chococlassifier, [lbp hog]);
 chocoType = predicted{:};
 end

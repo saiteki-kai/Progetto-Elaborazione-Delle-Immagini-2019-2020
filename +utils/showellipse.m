@@ -1,11 +1,11 @@
+function showellipse(image, mask, showimage)
+%SHOWELLIPSE disegna ellisse, bounding box e assi di simmetria
 % mostra ellisse bounding box
 % passandogli il vettore s calcolabile con regionprops(...)
 % - bounding box
 % - eccentricity, orientation, centroid
 % - majoraxis, minoraxis
 
-function showellipse(image, mask, showimage)
-    
     s = regionprops(mask, 'BoundingBox', 'Eccentricity', 'MajorAxisLength', ...
         'MinorAxisLength', 'Orientation', 'Centroid');
     
@@ -14,7 +14,7 @@ function showellipse(image, mask, showimage)
         hold on;
     end
     
-    rectangle('Position', s.BoundingBox, 'EdgeColor', 'r');
+    %rectangle('Position', s.BoundingBox, 'EdgeColor', 'r');
 
     phi = linspace(0,2*pi,50);
     cosphi = cos(phi);
@@ -44,10 +44,10 @@ function showellipse(image, mask, showimage)
         
         [~, ii] = maxk(dist, 3);
         [~, jj] = mink(dist, 2);
-        plot(x(ii), y(ii));
-        plot(x(jj), y(jj));
-
-        scatter(x, y);
+        plot(x(ii), y(ii), 'LineWidth', 2);
+        plot(x(jj), y(jj), 'LineWidth', 2);
+        
+        plot(x, y);
     end
     
     hold off

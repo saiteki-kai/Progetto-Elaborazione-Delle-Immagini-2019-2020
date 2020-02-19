@@ -14,7 +14,7 @@ shape = classification.getshape(mask);
 [centers, radii] = findchocolates(box, mask, shape); 
 
 % Look for errors
-if shape == "rettangolare"  
+if shape == "rettangolare"
     grid = creategrid(centers);
     errors = checkerrors(im, grid, radii);
 else

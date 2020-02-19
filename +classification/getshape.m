@@ -10,7 +10,7 @@ end
 function out = predict(values)
 %PREDICT
 
-load("shape-classifier.mat", "shapeclassifier");
+load("Data/shape-classifier.mat", "shapeclassifier");
 predicted = pdist2(values, shapeclassifier.mr) < pdist2(values, shapeclassifier.mq);
 if predicted == 1
     out = "rettangolare";
