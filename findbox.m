@@ -16,4 +16,3 @@ bw = bwareafilt(bw, 1);
 mask = bwconvhull(bw);
 end
 
-

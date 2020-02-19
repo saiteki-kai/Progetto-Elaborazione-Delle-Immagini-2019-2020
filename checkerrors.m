@@ -1,10 +1,6 @@
 function errors = checkerrors(im, centers, radius)
 %CHECK_ERRORS ...
 
-if ~isinteger(im)
-    error("L'immagine deve essere RGB");
-end
-
 centers = centers * 5;
 radius = radius * 5;
 
@@ -27,8 +23,7 @@ for i = 1 : length(centers)
     
     x = centers(i, 1);
     y = centers(i, 2);
-    choco = utils.cropcircle(im, x, y, radius, true);
-    choco = imresize(choco, [239 239]);
+    choco = utils.cropcircle(im, x, y, radius, false);
     if getcode(choco) == 1
         nStamps = nStamps + 1;
     else
@@ -53,8 +48,7 @@ for i = 1 : n
     for j = 1 : m
         x = centers(i, j, 1);
         y = centers(i, j, 2);
-        choco = utils.cropcircle(im, x, y, radius, true);
-        choco = imresize(choco, [239 239]);
+        choco = utils.cropcircle(im, x, y, radius, false);
         grid(i, j) = getcode(choco);
     end
 end
@@ -111,8 +105,6 @@ end
 
 end
 
-
-%%%%% AUMENTARE IL RAGGIO DEI CERCHI PER I BOLLINI FUORI RENGE %%%%%....
 function out = existsstamp(im)
 %ISSTAMP verify the existence of the stamp
 
