@@ -10,11 +10,11 @@
 
 # Una scatola NON è conforme se:
 
-    * Mancano dei cioccolatini
-    * I cioccolatini sono in posizione non corretta
-    * Mancano i bollini sui cioccolatini
-    * Ci sono degli elementi estranei nella scatola
-    * (La presenza all’esterno della scatola di oggetti NON influenza la conformità della scatola)
+* Mancano dei cioccolatini
+* I cioccolatini sono in posizione non corretta
+* Mancano i bollini sui cioccolatini
+* Ci sono degli elementi estranei nella scatola
+* (La presenza all’esterno della scatola di oggetti NON influenza la conformità della scatola)
 
 # Risultato classificazione:
 
