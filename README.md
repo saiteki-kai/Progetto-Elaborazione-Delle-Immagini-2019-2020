@@ -1,7 +1,7 @@
 # Controllo Qualità
 
 * Questa applicazione è un ipotetico controllo di qualità del
-  confezionamento di scatole di cioccolatini
+  confezionamento di scatole di cioccolatini.
 * L’applicazione data una fotografia di una scatola di cioccolatini ne valuta la sua
   conformità e ne mostra gli eventuali errori.
   
@@ -10,11 +10,11 @@
 
 # Una scatola NON è conforme se:
 
-* Mancano dei cioccolatini
-* I cioccolatini sono in posizione non corretta
-* Mancano i bollini sui cioccolatini
-* Ci sono degli elementi estranei nella scatola
-* (La presenza all’esterno della scatola di oggetti NON influenza la conformità della scatola)
+* Mancano dei cioccolatini.
+* I cioccolatini sono in posizione non corretta.
+* Mancano i bollini sui cioccolatini.
+* Ci sono degli elementi estranei nella scatola.
+* (La presenza all’esterno della scatola di oggetti NON influenza la conformità della scatola).
 
 # Risultato classificazione
 
