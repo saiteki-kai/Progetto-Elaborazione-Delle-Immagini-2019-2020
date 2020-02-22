@@ -3,7 +3,7 @@
 • Questa applicazione è un ipotetico controllo di qualità del
   confezionamento di scatole di cioccolatini
 • L’applicazione data una fotografia di una scatola di cioccolatini ne valuta la sua
-  conformità.
+  conformità e ne mostra gli eventuali errori.
   
   ![Screenshot_2020-02-22_13-04-49](/uploads/72bd6c4de0328afff35c30a5ed853233/Screenshot_2020-02-22_13-04-49.png)
   ![Screenshot_2020-02-22_13-04-13](/uploads/c7617b95df26fc7258b057b2d624ff52/Screenshot_2020-02-22_13-04-13.png)
@@ -18,10 +18,9 @@ Una scatola NON è conforme se:
   della scatola
  
   ![Screenshot_2020-02-22_13-33-20](/uploads/d85e5c62f9a99fb657c8244372396de0/Screenshot_2020-02-22_13-33-20.png)
-
-  ![Screenshot_2020-02-22_13-33-42](/uploads/055a150155b3e1bf9d0c65d219fe9b24/Screenshot_2020-02-22_13-33-42.png)
-
   ![Screenshot_2020-02-22_13-34-02](/uploads/6ace75d0029814abd608c024d4b4aae7/Screenshot_2020-02-22_13-34-02.png)
+  
+  ![Screenshot_2020-02-22_13-33-42](/uploads/055a150155b3e1bf9d0c65d219fe9b24/Screenshot_2020-02-22_13-33-42.png)
 
   
 * main.m - contiene la funzione che data un immagine ritorna la conformità.
