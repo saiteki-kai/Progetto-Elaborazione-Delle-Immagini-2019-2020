@@ -16,12 +16,12 @@
 * Ci sono degli elementi estranei nella scatola
 * (La presenza all’esterno della scatola di oggetti NON influenza la conformità della scatola)
 
-# Risultato classificazione:
+# Risultato classificazione
 
  ![Screenshot_2020-02-22_13-33-20](/uploads/6e164e1369bdae3b5ffce3be60c564e6/Screenshot_2020-02-22_13-33-20.png)
  ![Screenshot_2020-02-22_13-34-02](/uploads/8216a5f373493a61598361ec02b9bdea/Screenshot_2020-02-22_13-34-02.png)
 
-# Visualizzazione eventuali errori:
+# Visualizzazione eventuali errori
 
  ![Screenshot_2020-02-22_13-33-42](/uploads/055a150155b3e1bf9d0c65d219fe9b24/Screenshot_2020-02-22_13-33-42.png)
 
