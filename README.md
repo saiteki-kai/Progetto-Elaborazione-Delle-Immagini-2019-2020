@@ -25,7 +25,8 @@
 
  ![Screenshot_2020-02-22_13-33-42](/uploads/055a150155b3e1bf9d0c65d219fe9b24/Screenshot_2020-02-22_13-33-42.png)
 
-  
+# ------------------------------------------------------------------------------
+
 * main.m - contiene la funzione che data un immagine ritorna la conformità.
 * maintest.m - valuta la conformità di tutte le immagini.
 * +classification - contiene una serie di script e funzioni per la classificazione.
