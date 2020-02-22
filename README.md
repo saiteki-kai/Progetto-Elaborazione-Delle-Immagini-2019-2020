@@ -17,8 +17,8 @@ Una scatola NON è conforme se:
 • La presenza all’esterno della scatola di oggetti NON influenza la conformità
   della scatola
  
-  ![Screenshot_2020-02-22_13-33-20](/uploads/d85e5c62f9a99fb657c8244372396de0/Screenshot_2020-02-22_13-33-20.png)
-  ![Screenshot_2020-02-22_13-34-02](/uploads/6ace75d0029814abd608c024d4b4aae7/Screenshot_2020-02-22_13-34-02.png)
+ ![Screenshot_2020-02-22_13-33-20](/uploads/6e164e1369bdae3b5ffce3be60c564e6/Screenshot_2020-02-22_13-33-20.png)
+ ![Screenshot_2020-02-22_13-34-02](/uploads/8216a5f373493a61598361ec02b9bdea/Screenshot_2020-02-22_13-34-02.png)
   
   ![Screenshot_2020-02-22_13-33-42](/uploads/055a150155b3e1bf9d0c65d219fe9b24/Screenshot_2020-02-22_13-33-42.png)
 
