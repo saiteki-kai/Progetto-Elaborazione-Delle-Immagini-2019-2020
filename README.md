@@ -5,8 +5,8 @@
 • L’applicazione data una fotografia di una scatola di cioccolatini ne valuta la sua
   conformità.
   
-  ![Screenshot_2020-02-22_13-04-49](/uploads/94ce6b23dc99a40d15e11ae82d759f7f/Screenshot_2020-02-22_13-04-49.png)
-  ![Screenshot_2020-02-22_13-04-13](/uploads/316b4e68dc84cea0450f852331231383/Screenshot_2020-02-22_13-04-13.png)
+  ![Screenshot_2020-02-22_13-04-49](/uploads/72bd6c4de0328afff35c30a5ed853233/Screenshot_2020-02-22_13-04-49.png)
+  ![Screenshot_2020-02-22_13-04-13](/uploads/c7617b95df26fc7258b057b2d624ff52/Screenshot_2020-02-22_13-04-13.png)
 
 Una scatola NON è conforme se:
     - Mancano dei cioccolatini
