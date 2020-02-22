@@ -1,9 +1,9 @@
 #Controllo Qualità
 
-• Questa applicazione è un ipotetico controllo di qualità del
+* Questa applicazione è un ipotetico controllo di qualità del
   confezionamento di scatole di cioccolatini
   
-• L’applicazione data una fotografia di una scatola di cioccolatini ne valuta la sua
+* L’applicazione data una fotografia di una scatola di cioccolatini ne valuta la sua
   conformità e ne mostra gli eventuali errori.
   
   ![Screenshot_2020-02-22_13-04-49](/uploads/72bd6c4de0328afff35c30a5ed853233/Screenshot_2020-02-22_13-04-49.png)
