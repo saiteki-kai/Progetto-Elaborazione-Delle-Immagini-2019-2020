@@ -1,4 +1,4 @@
-# Controllo Qualità
+# Progetto elaborazione delle immagini 2019/2020
 
 * Questa applicazione è un ipotetico controllo di qualità del
   confezionamento di scatole di cioccolatini.
