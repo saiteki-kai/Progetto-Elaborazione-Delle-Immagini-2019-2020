@@ -13,7 +13,7 @@
 
 * Mancano dei cioccolatini.
 * I cioccolatini sono in posizione non corretta.
-* Mancano i bollini sui cioccolatini.
+* Mancano i bollini sui cioccolatini (esclusivamente i ferrero rocher).
 * Ci sono degli elementi estranei nella scatola.
 * (La presenza all’esterno della scatola di oggetti NON influenza la conformità della scatola).
 
