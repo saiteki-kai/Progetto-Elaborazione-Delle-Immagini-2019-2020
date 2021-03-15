@@ -6,8 +6,8 @@
   conformità e ne mostra gli eventuali errori.
 * Per questo progetto le uniche scatole di cioccolatini considerate sono le seguenti:
   
-  ![Screenshot_2020-02-22_13-04-49](/uploads/72bd6c4de0328afff35c30a5ed853233/Screenshot_2020-02-22_13-04-49.png)
-  ![Screenshot_2020-02-22_13-04-13](/uploads/c7617b95df26fc7258b057b2d624ff52/Screenshot_2020-02-22_13-04-13.png)
+  ![Screenshot_2020-02-22_13-04-49](https://user-images.githubusercontent.com/19750893/111160424-61f78000-859a-11eb-8c1e-7bedd4b7f8d6.png)
+  ![Screenshot_2020-02-22_13-04-13](https://user-images.githubusercontent.com/19750893/111160551-7d628b00-859a-11eb-92ee-69914b113dc0.png)
 
 # Una scatola NON è conforme se:
 
@@ -19,12 +19,12 @@
 
 # Risultato classificazione
 
- ![Screenshot_2020-02-22_13-33-20](/uploads/6e164e1369bdae3b5ffce3be60c564e6/Screenshot_2020-02-22_13-33-20.png)
- ![Screenshot_2020-02-22_13-34-02](/uploads/8216a5f373493a61598361ec02b9bdea/Screenshot_2020-02-22_13-34-02.png)
+![Screenshot_2020-02-22_13-33-20](https://user-images.githubusercontent.com/19750893/111160755-b0a51a00-859a-11eb-8441-a499101b5b1c.png)
+![Screenshot_2020-02-22_13-34-02](https://user-images.githubusercontent.com/19750893/111160775-b69afb00-859a-11eb-8882-f87de2d17794.png)
 
 # Visualizzazione eventuali errori
 
- ![Screenshot_2020-02-22_13-33-42](/uploads/055a150155b3e1bf9d0c65d219fe9b24/Screenshot_2020-02-22_13-33-42.png)
+![Screenshot_2020-02-22_13-33-42](https://user-images.githubusercontent.com/19750893/111160825-c61a4400-859a-11eb-834c-258e14554ca0.png)
 
 # Implementazione Matlab
 
